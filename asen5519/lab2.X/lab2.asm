@@ -25,6 +25,7 @@
 ;;;;;;; Variables ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
         cblock  0x000          ;Beginning of Access RAM
+	count
         endc
 
 ;;;;;;; Macro definitions ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -47,9 +48,14 @@
 Mainline
         rcall  	Initial          ;Initialize everything
 Loop
-		SWAPF	PORTB,0
-		CONF 	WREG,0,0
-        MOVWF 	LATB
+        btg  	LATB,0          ;Toggle pin, to support measuring loop time
+	movlw	H'FA'
+	addlw	H'38'
+	incf	WREG
+	addwf	WREG
+	negf	WREG
+	rlcf	WREG
+	movff	WREG,count
 		bra  	Loop
 
 ;;;;;;; Initial subroutine ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -57,8 +63,13 @@ Loop
 ; This subroutine performs all initializations of variables and registers.
 
 Initial
-        movlw  	B'00001111'		; Set first four bits to input, last 4 to out
+        movlw  	B'11000000'		; Move I/O values for PORTB into WREG
 		movwf  	TRISB			; Set I/O (TRISB)for PORTB
+		clrf  	LATB			; Drive all outputs on port B to zero
+		movlw	0x34
+		addlw	0x56
+		movlw	0
+		movlw	B'00000001'
         return
 
         end

@@ -1,0 +1,85 @@
+Disassembly Listing for lab2
+Generated From:
+C:/repos/school/asen5519/lab2.X/dist/default/debug/lab2.X.debug.cof
+Sep 11, 2016 8:48:47 PM
+
+---  C:/repos/school/asen5519/lab2.X/lab2.asm  ----------------------------------------------------------
+                                                  1:     ;;;;;;; Lab 2 template for ASEN 4519/5519 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+                                                  2:     ;
+                                                  3:     ;	Created:	Scott Palo (scott.palo@colorado.edu)
+                                                  4:     ;   Modified:   your info here
+                                                  5:     ;	orignal:	10-SEP-06
+                                                  6:     ;   Modified:   
+                                                  7:     ;
+                                                  8:     ;	This file provides a basic assembly programming template
+                                                  9:     ;
+                                                  10:    ;;;;;;; Program hierarchy ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+                                                  11:    ;
+                                                  12:    ; Mainline
+                                                  13:    ;   Initial
+                                                  14:    ;
+                                                  15:    ;;;;;;; Assembler directives ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+                                                  16:    
+                                                  17:            list  P=PIC18F87K22, F=INHX32, C=160, N=0, ST=OFF, MM=OFF, R=DEC, X=ON
+                                                  18:            #include p18f87k22.inc
+                                                  19:    ;		MPLAB 7.20 and later configuration directives
+                                                  20:    ;		Select "Configuration Bits set in code" to use the following configuration
+                                                  21:    		CONFIG	FOSC = HS1
+                                                  22:    		CONFIG	PWRTEN = ON, BOREN = ON, BORV = 1, WDTEN = OFF
+                                                  23:    		CONFIG	CCP2MX = PORTC, XINST = OFF
+                                                  24:    
+                                                  25:    ;;;;;;; Variables ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+                                                  26:    
+                                                  27:            cblock  0x000          ;Beginning of Access RAM
+                                                  28:    	count
+                                                  29:            endc
+                                                  30:    
+                                                  31:    ;;;;;;; Macro definitions ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+                                                  32:    
+                                                  33:    
+                                                  34:    ;;;;;;; Vectors ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+                                                  35:    
+                                                  36:            org  0x0000             ;Reset vector
+0000  0000     NOP                                37:            nop
+0002  EF0E     GOTO 0x1C                          38:            goto  Mainline
+0004  F000     NOP
+                                                  39:    
+                                                  40:            org  0x0008             ;High priority interrupt vector
+0008  EF04     GOTO 0x8                           41:            goto  $                 ;Trap
+000A  F000     NOP
+                                                  42:    
+                                                  43:            org  0x0018             ;Low priority interrupt vector
+0018  EF0C     GOTO 0x18                          44:            goto  $                 ;Trap
+001A  F000     NOP
+                                                  45:    
+                                                  46:    ;;;;;;; Mainline program ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+                                                  47:    
+                                                  48:    Mainline
+001C  D80A     RCALL 0x32                         49:            rcall  	Initial          ;Initialize everything
+                                                  50:    Loop
+001E  708A     BTG LATB, 0, ACCESS                51:            btg  	LATB,0          ;Toggle pin, to support measuring loop time
+0020  0EFA     MOVLW 0xFA                         52:    	movlw	H'FA'
+0022  0F38     ADDLW 0x38                         53:    	addlw	H'38'
+0024  2AE8     INCF WREG, F, ACCESS               54:    	incf	WREG
+0026  26E8     ADDWF WREG, F, ACCESS              55:    	addwf	WREG
+0028  6CE8     NEGF WREG, ACCESS                  56:    	negf	WREG
+002A  36E8     RLCF WREG, F, ACCESS               57:    	rlcf	WREG
+002C  CFE8     MOVFF WREG, 0x0                    58:    	movff	WREG,count
+002E  F000     NOP
+0030  D7F6     BRA 0x1E                           59:    		bra  	Loop
+                                                  60:    
+                                                  61:    ;;;;;;; Initial subroutine ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+                                                  62:    ;
+                                                  63:    ; This subroutine performs all initializations of variables and registers.
+                                                  64:    
+                                                  65:    Initial
+0032  0EC0     MOVLW 0xC0                         66:            movlw  	B'11000000'		; Move I/O values for PORTB into WREG
+0034  6E93     MOVWF TRISB, ACCESS                67:    		movwf  	TRISB			; Set I/O (TRISB)for PORTB
+0036  6A8A     CLRF LATB, ACCESS                  68:    		clrf  	LATB			; Drive all outputs on port B to zero
+0038  0E34     MOVLW 0x34                         69:    		movlw	0x34
+003A  0F56     ADDLW 0x56                         70:    		addlw	0x56
+003C  0E00     MOVLW 0x0                          71:    		movlw	0
+003E  0E01     MOVLW 0x1                          72:    		movlw	B'00000001'
+0040  0012     RETURN 0                           73:            return
+                                                  74:    
+                                                  75:            end
