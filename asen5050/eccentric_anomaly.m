@@ -6,7 +6,8 @@ function eccentric_anomaly = eccentric_anomaly(mean_anomaly,eccentricity,toleran
 % Created 3/20/16
 % INPUTS:   mean_anomaly = mean anomaly (rads)
 %           eccentricity = eccentricity
-%           n = number of iterations to use
+%           tolerance = minimum delta in eccentric anomaly between two
+%           consecutive iterations
 % OUTPUTS:  eccentric_anomaly = eccentric anomaly (rads)
 
 M = mean_anomaly;
