@@ -19,7 +19,7 @@ function elements = state2orbit(R,V,mu,deg)
 %       a = semimajor axis [km]
 %       e = eccentricity
 %       i = inclination [rad]
-%       Omega = right ascension of ascending node [rad]
+%       raan = right ascension of ascending node [rad]
 %       omega = argument of periapsis [rad]
 %       theta = true anomaly [rad]
 %       mean = mean anomaly [rad]
@@ -90,7 +90,7 @@ a = p/(1-e^2);      % semimajor axis [km]
 T = 2*pi*sqrt(a^3/mu);      % orbital period [s]
 n = 2*pi/T;     % mean motion [rad/s]
 % Calculate other anomalies and time past periapsis
-[~,ecc,mean,t_p]=anomalies(theta,'true',a,e,mu);
+[~,ecc,mean,t_p]=anomalies(theta,'true',a,e,mu,0);
 % Calculate flight path angle
 cos_phi = h/(r*v);
 if (true > pi)

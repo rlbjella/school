@@ -38,6 +38,5 @@ cosv = (cos(eccentric)-ecc)/(1-ecc*cos(eccentric));
 true_rad = atan2(sinv,cosv);
 true = rad2deg(true_rad);
 
-
 end
 
