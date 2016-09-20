@@ -1,4 +1,5 @@
 function eccentric_anomaly = eccentric_anomaly(mean_anomaly,eccentricity,tolerance)
+%BEGINHEADER
 % Group 3: Russell Bjella, Tony Ly, Azalee Rafii
 % Iterative solver for eccentric anomaly given mean anomaly and
 % eccentricity (solve M = E - e*sin(E)) (Kepler's Equation)
@@ -9,6 +10,7 @@ function eccentric_anomaly = eccentric_anomaly(mean_anomaly,eccentricity,toleran
 %           tolerance = minimum delta in eccentric anomaly between two
 %           consecutive iterations
 % OUTPUTS:  eccentric_anomaly = eccentric anomaly (rads)
+%ENDHEADER
 
 M = mean_anomaly;
 e = eccentricity;
