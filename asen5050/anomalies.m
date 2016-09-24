@@ -1,6 +1,6 @@
 function [true,ecc,mean,time,r] = anomalies(value,unit,a,e,mu,deg)
 %BEGINHEADER
-% state2orbit.m
+% anomalies.m
 % USAGE
 %   [true,ecc,mean,time]=anomalies(25,'true',15000,0.1,398600.44)
 % DESCRIPTION
