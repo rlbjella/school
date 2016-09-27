@@ -41,8 +41,8 @@
 ;;;;;;; Hardware notes ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;
 ;   LED D2 port/pin is B5
-;   LED D3 port/pin is ?		Students add values/remove question marks
-;   LED D4 port/pin is ?
+;   LED D3 port/pin is B6		Students add values/remove question marks
+;   LED D4 port/pin is B7
 ;   PIC board LED D6 port/pin is ?
 ;   PIC board LED D6 - pull pin ? to turn LED on
 ;	RPG-A port/pin is ?
@@ -52,7 +52,7 @@
 ;;;;;;;; Variables ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
         cblock  0x000   ;Beginning of Access RAM, define your variables here
-			CNT         ;EXAMPLE: variable CNT is at memory address 0x000 in RAM
+			CNT	    ;EXAMPLE: variable CNT is at memory address 0x000 in RAM
 			VAL1        ;EXAMPLE: variable VAL1 is at memory address 0x001 in RAM
         endc
 
@@ -82,6 +82,8 @@ Mainline
         rcall  Initial          ;Jump to initalization routine
 Loop
 ; PUT YOUR CODE HERE
+	MOVF	PORTD,0	    ; Read switch value into WREG
+	
         bra  Loop				; Main loop should run forever after entry
 
 ;;;;;;; Initial subroutine ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -89,20 +91,21 @@ Loop
 ; This subroutine performs all initializations of variables and registers.
 
 Initial
-		; Set TRISA
-		; Set TRISB
-		; Set TRISD
-		; Turn off all LEDS
-		; call subroutine to wait 1 second
-		; Turn ON D2
-		; call subroutine to wait 1 second
-		; Turn OFF D2
-		; Turn ON D3
-		; call subroutine to wait 1 second
-		; Turn OFF D3
-		; Turn ON D4
-		; call subroutine to wait 1 second
-		; Turn OFF D4
+	MOVLF	B'00000000',TRISA	; Set TRISA
+	MOVLF	B'00000000',TRISB	; Set TRISB
+	MOVLF	B'00000000',TRISD	; Set TRISD
+	MOVLF	B'00000000',LATB	; Turn off all LEDS
+	RCALL	Wait1sec	; call subroutine to wait 1 second
+	BSF	LATB,5	; Turn ON D2
+	RCALL	Wait1sec	; call subroutine to wait 1 second
+	BCF	LATB,5	; Turn OFF D2
+	BSF	LATB,6	; Turn ON D3
+	RCALL	Wait1sec	; call subroutine to wait 1 second
+	BCF	LATB,6	; Turn OFF D3
+	BSF	LATB,7	; Turn ON D4
+	RCALL	Wait1sec	; call subroutine to wait 1 second
+	BCF	LATB,7	; Turn OFF D4
+	BRA	Loop	; Go to infinite loop
         return
 
 ;;;;;;; WaitXXXms subroutine ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -115,16 +118,26 @@ Initial
 		
 WaitXXXms
 		; Add code here
-		return
+	return
 
 ;;;;;;; Wait1sec subroutine ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;
 ; Subroutine to wait 1 sec based on calling WaitXXXms YYY times
 				
 Wait1sec
-		; Add code here
-		return
-
+BIGNUM	EQU	65536-39062
+	MOVLW	B'00000101'
+	MOVWF	T0CON,0
+	MOVLW	high BIGNUM
+	MOVWF	TMR0H,0
+	MOVLW	low BIGNUM
+	MOVWF	TMR0L
+	BSF	T0CON,7,0
+Loop1	
+	BTFSS	INTCON,TMR0IF,0	;loop until interrupt flag
+	BRA	Loop1
+	BCF	T0CON,7,0   ; turn off timer
+	BCF	INTCON,TMR0IF,0	;clear the IF
 ;;;;;;; Check_SW3 subroutine ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;
 ; Subroutne to check the status of SW3 and change D4 (ASEN5519 ONLY)

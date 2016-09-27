@@ -1,0 +1,60 @@
+MPLINK 5.08, LINKER
+Linker Map File - Created Tue Sep 27 14:01:03 2016
+
+                                 Section Info
+                  Section       Type    Address   Location Size(Bytes)
+                ---------  ---------  ---------  ---------  ---------
+                   .org_0       code   0x000000    program   0x000006
+                   .cinit    romdata   0x000006    program   0x000002
+                   .org_1       code   0x000008    program   0x000004
+                   .org_2       code   0x000018    program   0x00003a
+.config_300000_BUILD/DEFAULT/DEBUG/LAB3_ORIG.O    romdata   0x300000    program   0x000001
+.config_300001_BUILD/DEFAULT/DEBUG/LAB3_ORIG.O    romdata   0x300001    program   0x000001
+.config_300002_BUILD/DEFAULT/DEBUG/LAB3_ORIG.O    romdata   0x300002    program   0x000001
+.config_300003_BUILD/DEFAULT/DEBUG/LAB3_ORIG.O    romdata   0x300003    program   0x000001
+.config_300005_BUILD/DEFAULT/DEBUG/LAB3_ORIG.O    romdata   0x300005    program   0x000001
+
+
+
+                              Program Memory Usage 
+                               Start         End      
+                           ---------   ---------      
+                            0x000000    0x00000b      
+                            0x000018    0x000051      
+                            0x300000    0x300003      
+                            0x300005    0x300005      
+            75 out of 132120 program addresses used, program memory utilization is 0%
+
+
+
+                              Symbols - Sorted by Name
+                     Name    Address   Location    Storage File                     
+                ---------  ---------  ---------  --------- ---------                
+                Check_RPG   0x000050    program     static C:\repos\school\asen5519\lab3.X\lab3_orig.asm
+                Check_SW3   0x00004e    program     static C:\repos\school\asen5519\lab3.X\lab3_orig.asm
+                  Initial   0x000022    program     static C:\repos\school\asen5519\lab3.X\lab3_orig.asm
+                     Loop   0x00001e    program     static C:\repos\school\asen5519\lab3.X\lab3_orig.asm
+                    Loop1   0x000048    program     static C:\repos\school\asen5519\lab3.X\lab3_orig.asm
+                 Mainline   0x00001c    program     static C:\repos\school\asen5519\lab3.X\lab3_orig.asm
+                 Wait1sec   0x000046    program     static C:\repos\school\asen5519\lab3.X\lab3_orig.asm
+                WaitXXXms   0x000044    program     static C:\repos\school\asen5519\lab3.X\lab3_orig.asm
+             _.org_1_0008   0x000008    program     static C:\repos\school\asen5519\lab3.X\lab3_orig.asm
+             _.org_2_0018   0x000018    program     static C:\repos\school\asen5519\lab3.X\lab3_orig.asm
+
+
+
+                              Symbols - Sorted by Address
+                     Name    Address   Location    Storage File                     
+                ---------  ---------  ---------  --------- ---------                
+             _.org_1_0008   0x000008    program     static C:\repos\school\asen5519\lab3.X\lab3_orig.asm
+             _.org_2_0018   0x000018    program     static C:\repos\school\asen5519\lab3.X\lab3_orig.asm
+                 Mainline   0x00001c    program     static C:\repos\school\asen5519\lab3.X\lab3_orig.asm
+                     Loop   0x00001e    program     static C:\repos\school\asen5519\lab3.X\lab3_orig.asm
+                  Initial   0x000022    program     static C:\repos\school\asen5519\lab3.X\lab3_orig.asm
+                WaitXXXms   0x000044    program     static C:\repos\school\asen5519\lab3.X\lab3_orig.asm
+                 Wait1sec   0x000046    program     static C:\repos\school\asen5519\lab3.X\lab3_orig.asm
+                    Loop1   0x000048    program     static C:\repos\school\asen5519\lab3.X\lab3_orig.asm
+                Check_SW3   0x00004e    program     static C:\repos\school\asen5519\lab3.X\lab3_orig.asm
+                Check_RPG   0x000050    program     static C:\repos\school\asen5519\lab3.X\lab3_orig.asm
+
+
