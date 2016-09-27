@@ -51,17 +51,17 @@ OBJECTDIR=build/${CND_CONF}/${IMAGE_TYPE}
 DISTDIR=dist/${CND_CONF}/${IMAGE_TYPE}
 
 # Source Files Quoted if spaced
-SOURCEFILES_QUOTED_IF_SPACED=
+SOURCEFILES_QUOTED_IF_SPACED=lab3_orig.asm
 
 # Object Files Quoted if spaced
-OBJECTFILES_QUOTED_IF_SPACED=
-POSSIBLE_DEPFILES=
+OBJECTFILES_QUOTED_IF_SPACED=${OBJECTDIR}/lab3_orig.o
+POSSIBLE_DEPFILES=${OBJECTDIR}/lab3_orig.o.d
 
 # Object Files
-OBJECTFILES=
+OBJECTFILES=${OBJECTDIR}/lab3_orig.o
 
 # Source Files
-SOURCEFILES=
+SOURCEFILES=lab3_orig.asm
 
 
 CFLAGS=
@@ -88,7 +88,23 @@ MP_LINKER_DEBUG_OPTION=
 # ------------------------------------------------------------------------------------
 # Rules for buildStep: assemble
 ifeq ($(TYPE_IMAGE), DEBUG_RUN)
+${OBJECTDIR}/lab3_orig.o: lab3_orig.asm  nbproject/Makefile-${CND_CONF}.mk
+	@${MKDIR} "${OBJECTDIR}" 
+	@${RM} ${OBJECTDIR}/lab3_orig.o.d 
+	@${RM} ${OBJECTDIR}/lab3_orig.o 
+	@${FIXDEPS} dummy.d -e "${OBJECTDIR}/lab3_orig.err" $(SILENT) -c ${MP_AS} $(MP_EXTRA_AS_PRE) -d__DEBUG -d__MPLAB_DEBUGGER_PK3=1 -q -p$(MP_PROCESSOR_OPTION)  -l\"${OBJECTDIR}/lab3_orig.lst\" -e\"${OBJECTDIR}/lab3_orig.err\" $(ASM_OPTIONS)    -o\"${OBJECTDIR}/lab3_orig.o\" \"lab3_orig.asm\" 
+	@${DEP_GEN} -d "${OBJECTDIR}/lab3_orig.o"
+	@${FIXDEPS} "${OBJECTDIR}/lab3_orig.o.d" $(SILENT) -rsi ${MP_AS_DIR} -c18 
+	
 else
+${OBJECTDIR}/lab3_orig.o: lab3_orig.asm  nbproject/Makefile-${CND_CONF}.mk
+	@${MKDIR} "${OBJECTDIR}" 
+	@${RM} ${OBJECTDIR}/lab3_orig.o.d 
+	@${RM} ${OBJECTDIR}/lab3_orig.o 
+	@${FIXDEPS} dummy.d -e "${OBJECTDIR}/lab3_orig.err" $(SILENT) -c ${MP_AS} $(MP_EXTRA_AS_PRE) -q -p$(MP_PROCESSOR_OPTION)  -l\"${OBJECTDIR}/lab3_orig.lst\" -e\"${OBJECTDIR}/lab3_orig.err\" $(ASM_OPTIONS)    -o\"${OBJECTDIR}/lab3_orig.o\" \"lab3_orig.asm\" 
+	@${DEP_GEN} -d "${OBJECTDIR}/lab3_orig.o"
+	@${FIXDEPS} "${OBJECTDIR}/lab3_orig.o.d" $(SILENT) -rsi ${MP_AS_DIR} -c18 
+	
 endif
 
 # ------------------------------------------------------------------------------------
