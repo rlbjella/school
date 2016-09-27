@@ -91,7 +91,7 @@ elseif (strcmp(type,'pp'))
     vt1 = sqrt(2*mu/rp1 - mu/at);
     % Compute delta-V for first impulse burn
     dv1 = abs(vt1 - vp1);
-    vt2 = sqrt(2*mu/ra2 - mu/at);
+    vt2 = sqrt(2*mu/rp2 - mu/at);
     % Compute delta-V for second impulse burn
     dv2 = abs(vt2 - vp2);
     % Compute total delta-V

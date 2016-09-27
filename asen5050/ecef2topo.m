@@ -40,5 +40,11 @@ el = asind(sez(3)/sez_mag);
 % Compute azimuth with quadrant check
 sin_az = sez(2) / sqrt(sez(1)^2+sez(2)^2);
 cos_az = -sez(2) / sqrt(sez(1)^2+sez(2)^2);
+azrad = atan2(sin_az,cos_az);
+az = rad2deg(azrad);
+
+% Construct output vector with azimuth, elevation, and range
+pos_topo = [az,el,sez_mag];
+
 
 end
