@@ -125,7 +125,7 @@ WaitXXXms
 ; Subroutine to wait 1 sec based on calling WaitXXXms YYY times
 				
 Wait1sec
-BIGNUM	EQU	65536-39062
+BIGNUM	EQU	65536-39063
 	MOVLW	B'00000101'
 	MOVWF	T0CON,0
 	MOVLW	high BIGNUM
