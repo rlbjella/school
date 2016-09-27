@@ -1,7 +1,7 @@
-function [pos_eci] = lla2eci(lla,theta_GST)
+function [pos_eci] = lla2ecef(lla,theta_GST)
 %BEGINHEADER
 % SOURCE
-%   $.m
+%   /.m
 % USAGE
 %   y = x(a,b)
 % DESCRIPTION

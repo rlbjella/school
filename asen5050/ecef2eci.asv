@@ -1,0 +1,16 @@
+function [pos_eci] = ecef2eci(pos_ecef,theta_GST)
+%BEGINHEADER
+% SOURCE
+%   /mnt/c/repos/school/asen5050/ecef2eci.m
+% USAGE
+%   [pos_eci] = ecef2eci(pos_ecef,theta_GST)
+% DESCRIPTION
+%   Converts a three element displacement vector in ECEF coordinates to
+%   inertial ECI coordinates fo
+% INPUTS
+%   a = input [unit]
+% OUTPUTS
+%   y = output [unit]
+%ENDHEADER
+
+end
