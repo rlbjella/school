@@ -52,8 +52,8 @@
 ;;;;;;;; Variables ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
         cblock  0x000   ;Beginning of Access RAM, define your variables here
-			CNT	    ;EXAMPLE: variable CNT is at memory address 0x000 in RAM
-			VAL1        ;EXAMPLE: variable VAL1 is at memory address 0x001 in RAM
+			CNT	    ;counter for 2ms wait loop in infinite loop
+			VAL1        ;bit0 is set to 1 if the switch is currently pressed
         endc
 
 ;;;;;;; Macro definitions ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
