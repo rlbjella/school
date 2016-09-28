@@ -1,4 +1,4 @@
-MPASM 5.68                     LAB3_ORIG.ASM   9-27-2016  17:39:58         PAGE  1
+MPASM 5.68                     LAB3_ORIG.ASM   9-27-2016  20:52:21         PAGE  1
 
 
 LOC  OBJECT CODE     LINE SOURCE TEXT
@@ -60,11 +60,11 @@ LOC  OBJECT CODE     LINE SOURCE TEXT
                       00043 ;   LED D2 port/pin is B5
                       00044 ;   LED D3 port/pin is B6               Students add values/remove question marks
                       00045 ;   LED D4 port/pin is B7
-                      00046 ;   PIC board LED D6 port/pin is ?
+                      00046 ;   PIC board LED D6 port/pin is B4
                       00047 ;   PIC board LED D6 - pull pin ? to turn LED on
-                      00048 ;       RPG-A port/pin is ?
-                      00049 ;       RPG-B port/pin is ?
-                      00050 ;       SW1 port/pin is ?
+                      00048 ;       RPG-A port/pin is D0
+                      00049 ;       RPG-B port/pin is D1
+                      00050 ;       SW1 port/pin is D3
                       00051 
                       00052 ;;;;;;;; Variables ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
                       00053 
@@ -98,104 +98,136 @@ LOC  OBJECT CODE     LINE SOURCE TEXT
 00001C                00081 Mainline
 00001C D???           00082         rcall  Initial          ;Jump to initalization routine
 00001E                00083 Loop
-                      00084 ; PUT YOUR CODE HERE
-00001E 5083           00085         MOVF    PORTD,0     ; Read switch value into WREG
-                      00086         
-000020 D???           00087         bra  Loop                               ; Main loop should run forever after entry
-                      00088 
-                      00089 ;;;;;;; Initial subroutine ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-                      00090 ;
-                      00091 ; This subroutine performs all initializations of variables and registers.
-                      00092 
-000022                00093 Initial
-                      00094         MOVLF   B'00000000',TRISA       ; Set TRISA
-000022 0E00               M         movlw  B'00000000'
-000024 6E92               M         movwf  TRISA
-                      00095         MOVLF   B'00000000',TRISB       ; Set TRISB
-000026 0E00               M         movlw  B'00000000'
-000028 6E93               M         movwf  TRISB
-                      00096         MOVLF   B'00000000',TRISD       ; Set TRISD
-00002A 0E00               M         movlw  B'00000000'
-00002C 6E95               M         movwf  TRISD
-                      00097         MOVLF   B'00000000',LATB        ; Turn off all LEDS
-00002E 0E00               M         movlw  B'00000000'
-000030 6E8A               M         movwf  LATB
-000032 D???           00098         RCALL   Wait1sec        ; call subroutine to wait 1 second
-000034 8A8A           00099         BSF     LATB,5  ; Turn ON D2
-000036 D???           00100         RCALL   Wait1sec        ; call subroutine to wait 1 second
-000038 9A8A           00101         BCF     LATB,5  ; Turn OFF D2
-00003A 8C8A           00102         BSF     LATB,6  ; Turn ON D3
-00003C D???           00103         RCALL   Wait1sec        ; call subroutine to wait 1 second
-00003E 9C8A           00104         BCF     LATB,6  ; Turn OFF D3
-000040 8E8A           00105         BSF     LATB,7  ; Turn ON D4
-000042 D???           00106         RCALL   Wait1sec        ; call subroutine to wait 1 second
-000044 9E8A           00107         BCF     LATB,7  ; Turn OFF D4
-000046 D???           00108         BRA     Loop    ; Go to infinite loop
-000048 0012           00109         return
-                      00110 
-                      00111 ;;;;;;; WaitXXXms subroutine ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-                      00112 ;
-                      00113 ; Subroutine to wait XXX ms
-                      00114 
-                      00115         ; NOTE - STUDENTS replace XXX with some value of your choosing
-                      00116         ; Choose a suitable value based on a single (non-nested) loop structure and 
-                      00117         ; not using an excessive amount of program memory - i.e. don't use 100 nop's
-                      00118                 
-00004A                00119 Wait2ms
-  0000F63C            00120 SMLNUM  EQU     65536-2500
-00004A 0E00           00121         MOVLW   B'00000000'
-00004C 6ED5           00122         MOVWF   T0CON,0
-00004E 0EF6           00123         MOVLW   high SMLNUM
-000050 6ED7           00124         MOVWF   TMR0H,0
-000052 0E3C           00125         MOVLW   low SMLNUM
-000054 6ED6           00126         MOVWF   TMR0L
-000056 8ED5           00127         BSF     T0CON,7,0
-000058                00128 Loop1   
-000058 A4F2           00129         BTFSS   INTCON,TMR0IF,0 ;loop until interrupt flag
-00005A D???           00130         BRA     Loop1
-00005C 9ED5           00131         BCF     T0CON,7,0   ; turn off timer
-00005E 94F2           00132         BCF     INTCON,TMR0IF,0 ;clear the IF
-000060 0012           00133         return
-                      00134 
-                      00135 ;;;;;;; Wait1sec subroutine ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-                      00136 ;
-                      00137 ; Subroutine to wait 1 sec based on calling WaitXXXms YYY times
-                      00138                                 
-000062                00139 Wait1sec
-  00006769            00140 BIGNUM  EQU     65536-39063
-000062 0E05           00141         MOVLW   B'00000101'
-000064 6ED5           00142         MOVWF   T0CON,0
-000066 0E67           00143         MOVLW   high BIGNUM
-000068 6ED7           00144         MOVWF   TMR0H,0
-00006A 0E69           00145         MOVLW   low BIGNUM
-00006C 6ED6           00146         MOVWF   TMR0L
-00006E 8ED5           00147         BSF     T0CON,7,0
-000070                00148 Loop2   
-000070 A4F2           00149         BTFSS   INTCON,TMR0IF,0 ;loop until interrupt flag
-000072 D???           00150         BRA     Loop2
-000074 9ED5           00151         BCF     T0CON,7,0   ; turn off timer
-000076 94F2           00152         BCF     INTCON,TMR0IF,0 ;clear the IF
-                      00153 ;;;;;;; Check_SW3 subroutine ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-                      00154 ;
-                      00155 ; Subroutne to check the status of SW3 and change D4 (ASEN5519 ONLY)
-                      00156                                 
-000078                00157 Check_SW3
-                      00158                 ; Add code here
-000078 0012           00159                 return
-                      00160 
-                      00161 ;;;;;;; Check_RPG subroutine ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-                      00162 ;
-                      00163 ; Subroutne to read the values of the RPG and display on D2 and D3 
-                      00164                                 
-00007A                00165 Check_RPG
-                      00166                 ; Add code here
-00007A 0012           00167                 return      
-                      00168         
-                      00169 
-                      00170         end
+00001E 788A           00084         BTG     LATB,4  ; Toggle D6 on/off
+                      00085         MOVLF   0xFA,CNT    ; Store 250 in CNT for 2ms
+000020 0EFA               M         movlw  0xFA
+000022 6E00               M         movwf  CNT
+                      00086 ; Go through second loop 250 times, waiting 4ms each time
+000024                00087 Loop4
+000024 D???           00088             RCALL   Check_RPG
+000026 D???           00089             RCALL   Check_SW3
+000028 D???           00090             RCALL   Wait2ms
+00002A D???           00091             RCALL   Check_RPG
+00002C D???           00092             RCALL   Check_SW3
+00002E D???           00093             RCALL   Wait2ms
+000030 0600           00094             DECF    CNT,1,0     ; Decrement counter, started at 250
+000032 E1??           00095             BNZ     Loop4
+                      00096         ; Loop infinitely through main loop
+000034 D???           00097         bra     Loop                            ; Main loop should run forever after entry
+                      00098 
+                      00099 ;;;;;;; Initial subroutine ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+                      00100 ;
+                      00101 ; This subroutine performs all initializations of variables and registers.
+                      00102 
+000036                00103 Initial
+                      00104         MOVLF   B'00000000',TRISB       ; Set TRISB as outputs
+000036 0E00               M         movlw  B'00000000'
+000038 6E93               M         movwf  TRISB
+                      00105         MOVLF   B'00000011',TRISD       ; Set TRISD 0 and 1 as inputs
+00003A 0E03               M         movlw  B'00000011'
+00003C 6E95               M         movwf  TRISD
+                      00106         MOVLF   B'00000000',LATB        ; Turn off all LEDS
+00003E 0E00               M         movlw  B'00000000'
+000040 6E8A               M         movwf  LATB
+000042 D???           00107         RCALL   Wait1sec        ; call subroutine to wait 1 second
+000044 8A8A           00108         BSF     LATB,5  ; Turn ON D2
+000046 D???           00109         RCALL   Wait1sec        ; call subroutine to wait 1 second
+000048 9A8A           00110         BCF     LATB,5  ; Turn OFF D2
+00004A 8C8A           00111         BSF     LATB,6  ; Turn ON D3
+00004C D???           00112         RCALL   Wait1sec        ; call subroutine to wait 1 second
+00004E 9C8A           00113         BCF     LATB,6  ; Turn OFF D3
+000050 8E8A           00114         BSF     LATB,7  ; Turn ON D4
+000052 D???           00115         RCALL   Wait1sec        ; call subroutine to wait 1 second
+000054 9E8A           00116         BCF     LATB,7  ; Turn OFF D4
+000056 D???           00117         BRA     Loop    ; Go to infinite loop
+000058 0012           00118         return
+                      00119 
+                      00120 ;;;;;;; Wait2ms subroutine ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+                      00121 ;
+                      00122 ; Subroutine to wait 2 ms
+                      00123 
+                      00124         ; NOTE - STUDENTS replace XXX with some value of your choosing
+                      00125         ; Choose a suitable value based on a single (non-nested) loop structure and 
+                      00126         ; not using an excessive amount of program memory - i.e. don't use 100 nop's
+                      00127                 
+00005A                00128 Wait2ms
+  0000F63C            00129 SMLNUM  EQU     65536-2500
+00005A 0E00           00130         MOVLW   B'00000000'
+00005C 6ED5           00131         MOVWF   T0CON,0
+00005E 0EF6           00132         MOVLW   high SMLNUM
+000060 6ED7           00133         MOVWF   TMR0H,0
+000062 0E3C           00134         MOVLW   low SMLNUM
+000064 6ED6           00135         MOVWF   TMR0L
+000066 8ED5           00136         BSF     T0CON,7,0
+000068                00137 Loop1   
+000068 A4F2           00138         BTFSS   INTCON,TMR0IF,0 ;loop until interrupt flag
+00006A D???           00139         BRA     Loop1
+00006C 9ED5           00140         BCF     T0CON,7,0   ; turn off timer
+00006E 94F2           00141         BCF     INTCON,TMR0IF,0 ;clear the IF
+000070 0012           00142         return
+                      00143 
+                      00144 ;;;;;;; Wait1sec subroutine ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+                      00145 ;
+                      00146 ; Subroutine to wait 1 sec based on calling WaitXXXms YYY times
+                      00147                                 
+000072                00148 Wait1sec
+  00006769            00149 BIGNUM  EQU     65536-39063
+000072 0E05           00150         MOVLW   B'00000101'
+000074 6ED5           00151         MOVWF   T0CON,0
+000076 0E67           00152         MOVLW   high BIGNUM
+000078 6ED7           00153         MOVWF   TMR0H,0
+00007A 0E69           00154         MOVLW   low BIGNUM
+00007C 6ED6           00155         MOVWF   TMR0L
+00007E 8ED5           00156         BSF     T0CON,7,0
+000080                00157 Loop2   
+000080 A4F2           00158         BTFSS   INTCON,TMR0IF,0 ;loop until interrupt flag
+000082 D???           00159         BRA     Loop2
+000084 9ED5           00160         BCF     T0CON,7,0   ; turn off timer
+000086 94F2           00161         BCF     INTCON,TMR0IF,0 ;clear the IF
+                      00162 ;;;;;;; Check_SW3 subroutine ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+                      00163 ;
+                      00164 ; Subroutine to check the status of SW3 and change D4 (ASEN5519 ONLY)
+                      00165                                 
+000088                00166 Check_SW3
+                      00167         ; Check if switch is pressed, skip branch if it is 
+000088 A683           00168         BTFSS   PORTD,3
+00008A D???           00169         BRA     CLRVAL1
+00008C B001           00170         BTFSC   VAL1,0  ; If VAL1 bit0 is clear, set it true and toggle D4
+00008E 0012           00171         return  ; return if VAL1 bit0 is set
+000090 8001           00172         BSF     VAL1,0
+000092 7E8A           00173         BTG     LATB,7
+000094 0012           00174         return
+                      00175         
+000096                00176 CLRVAL1 ; subroutine to clear bit 0 of VAL1
+000096 9001           00177         BCF     VAL1,0
+000098 0012           00178         return
+                      00179 
+                      00180 ;;;;;;; Check_RPG subroutine ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+                      00181 ;
+                      00182 ; Subroutne to read the values of the RPG and display on D2 and D3 
+                      00183                                 
+00009A                00184 Check_RPG
+00009A A083           00185         BTFSS   PORTD,0     ; Skip next if D0 (RPGA) is set
+00009C D???           00186         BRA     AOFF    ; Branch to subroutine to turn D2 off, otherwise turn on
+00009E 8A8A           00187         BSF     LATB,5
+0000A0 D???           00188         BRA     BCHECK  ; Branch to subroutine to check RPGB
+0000A2                00189 AOFF
+0000A2 9A8A           00190         BCF     LATB,5
+0000A4                00191 BCHECK
+0000A4 A283           00192         BTFSS   PORTD,1     ; Skip next if D1 (RPGB) is set
+0000A6 D???           00193         BRA     BOFF        ; Turn off D3
+0000A8 8C8A           00194         BSF     LATB,6      ; Turn on D3
+0000AA 0012           00195         return
+0000AC                00196 BOFF
+0000AC 9C8A           00197         BCF     LATB,6
+0000AE 0012           00198         return
+                      00199         
+                      00200 
+Warning[205]: Found directive in column 1. (end)
+                      00201 end
 
 Errors   :     0
-Warnings :     0 reported,     0 suppressed
+Warnings :     1 reported,     0 suppressed
 Messages :     0 reported,     0 suppressed
 
 
