@@ -1,4 +1,4 @@
-MPASM 5.68                     LAB3_ORIG.ASM   9-27-2016  20:52:21         PAGE  1
+MPASM 5.68                     LAB3_ORIG.ASM   9-29-2016  10:00:36         PAGE  1
 
 
 LOC  OBJECT CODE     LINE SOURCE TEXT
@@ -69,8 +69,8 @@ LOC  OBJECT CODE     LINE SOURCE TEXT
                       00052 ;;;;;;;; Variables ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
                       00053 
                       00054         cblock  0x000   ;Beginning of Access RAM, define your variables here
-  00000000            00055                         CNT         ;EXAMPLE: variable CNT is at memory address 0x000 in RAM
-  00000001            00056                         VAL1        ;EXAMPLE: variable VAL1 is at memory address 0x001 in RAM
+  00000000            00055                         CNT         ;counter for 2ms wait loop in infinite loop
+  00000001            00056                         VAL1        ;bit0 is set to 1 if the switch is currently pressed
                       00057         endc
                       00058 
                       00059 ;;;;;;; Macro definitions ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -123,8 +123,8 @@ LOC  OBJECT CODE     LINE SOURCE TEXT
                       00104         MOVLF   B'00000000',TRISB       ; Set TRISB as outputs
 000036 0E00               M         movlw  B'00000000'
 000038 6E93               M         movwf  TRISB
-                      00105         MOVLF   B'00000011',TRISD       ; Set TRISD 0 and 1 as inputs
-00003A 0E03               M         movlw  B'00000011'
+                      00105         MOVLF   B'00001011',TRISD       ; Set TRISD 0 and 1 as inputs
+00003A 0E0B               M         movlw  B'00001011'
 00003C 6E95               M         movwf  TRISD
                       00106         MOVLF   B'00000000',LATB        ; Turn off all LEDS
 00003E 0E00               M         movlw  B'00000000'
