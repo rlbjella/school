@@ -102,7 +102,7 @@ Loop4
 
 Initial
 	MOVLF	B'00000000',TRISB	; Set TRISB as outputs
-	MOVLF	B'00000011',TRISD	; Set TRISD 0 and 1 as inputs
+	MOVLF	B'00001011',TRISD	; Set TRISD 0 and 1 as inputs
 	MOVLF	B'00000000',LATB	; Turn off all LEDS
 	RCALL	Wait1sec	; call subroutine to wait 1 second
 	BSF	LATB,5	; Turn ON D2
