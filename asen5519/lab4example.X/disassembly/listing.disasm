@@ -1,0 +1,369 @@
+Disassembly Listing for lab4example
+Generated From:
+C:/repos/school/asen5519/lab4example.X/dist/default/debug/lab4example.X.debug.cof
+Oct 9, 2016 8:55:15 PM
+
+---  C:/repos/school/asen5519/lab4example.X/lab4_example.asm  -------------------------------------------
+                                                  1:     ;;;;;;; ASEN 4-5519 Lab 4 Example code ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+                                                  2:     ;
+                                                  3:     ;   ____ THIS IS NOT A TEMPLATE TO USE FOR LAB 4 _____
+                                                  4:     ;
+                                                  5:     ;   .... THIS CODE PROVIDES EXAMPLE FUNCTIONALITY ....
+                                                  6:     ;
+                                                  7:     ;   .... THE TIMING IN THIS CODE IS DIFFERENT THAN REQUIRED FOR LAB 4 ....
+                                                  8:     ;
+                                                  9:     ;   .... USE YOUR LAB 3 SOURCE FILE AS A STARTING POINT FOR LAB 4 ...
+                                                  10:    ; 
+                                                  11:    ;   .... YOU MAY REUSE PARTS OF THIS CODE IF THEY SUIT YOUR PURPOSE, BUT
+                                                  12:    ;   .... GIVE CREDIT IN YOUR COMMENTS FOR ANY CODE YOU USE FROM HERE
+                                                  13:    ;        FOR EXAMPLE (;   This subroutine is copied (or a modified version) of 
+                                                  14:    ;                     ;   the subroutine XXX in the lab4_example.asm file)
+                                                  15:    ;
+                                                  16:    ; DESCRIPTION
+                                                  17:    ; On power up exceute the following sequence:
+                                                  18:    ;   D2,D4,D4 and D6 should be off
+                                                  19:    ; 	D2 ON for ~1 second then OFF
+                                                  20:    ; 	D3 ON for ~1 second then OFF
+                                                  21:    ; 	D4 ON for ~1 second then OFF
+                                                  22:    ;   'ASEN5519' is output on the first line of the LCD 
+                                                  23:    ; LOOP on the following forever:
+                                                  24:    ; 	Blink "Alive" LED (D6) ON for ~250 ms then OFF for ~250 ms
+                                                  25:    ;   Generate PWM signal on RC2, period of T = 20ms, 5% duty cycle. Accurate to
+                                                  26:    ;   +/- 100us
+                                                  27:    ;   Switch checking:
+                                                  28:    ;     ASEN 4519: SW1 press and release switches between 5% to 10% duty cycle
+                                                  29:    ;                (i.e. 2ms on / 18ms off). The second line of the LCD displays
+                                                  30:    ;                the current pulse width (i.e. 'PW=1.0ms') ;
+                                                  31:    ;     ASEN 5519: SW1 press and release increments the ontime (and decrements the
+                                                  32:    ;                offtime) of the PWM signal by 0.2ms each switch press, until
+                                                  33:    ;                2ms on / 18ms off is reached, then reset to 1ms on / 19ms off.
+                                                  34:    ;                The second line of the LCD displays the current pulse width 
+                                                  35:    ;                (i.e. 'PW=1.2ms')
+                                                  36:    ;
+                                                  37:    ; NOTES:
+                                                  38:    ;   ~1 second means +/- 10msec, ~250 ms means +/- 10msec
+                                                  39:    ;   Use Timer0 for ten millisecond looptime.
+                                                  40:    ;
+                                                  41:    ;;;;;;; Program hierarchy ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+                                                  42:    ;
+                                                  43:    ; Mainline
+                                                  44:    ;   Initial
+                                                  45:    ;      BlinkAlive
+                                                  46:    ;      LoopTime
+                                                  47:    ;
+                                                  48:    ;;;;;;; Assembler directives ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+                                                  49:    
+                                                  50:            LIST  P=PIC18F87K22, F=INHX32, C=160, N=0, ST=OFF, MM=OFF, R=DEC, X=ON
+                                                  51:            #include P18F87K22.inc
+                                                  52:    
+                                                  53:    ;		MPLAB 7.20 and later configuration directives
+                                                  54:    ;		Select "Configuration Bits set in code" to use the following configuration
+                                                  55:    		CONFIG	FOSC = HS1, XINST = OFF
+                                                  56:    		CONFIG	PWRTEN = ON, BOREN = ON, BORV = 1
+                                                  57:    		CONFIG 	WDTEN = OFF
+                                                  58:    		CONFIG	CCP2MX = PORTC
+                                                  59:    
+                                                  60:    ;;;;;;; Variables ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+                                                  61:    
+                                                  62:            cblock  0x000                  ;Beginning of Access RAM
+                                                  63:            INTCONCOPY                     ;Copy of INTCON for LoopTime subroutine
+                                                  64:            COUNT                          ;Counter available as local to subroutines
+                                                  65:            ALIVECNT                       ;Counter for blinking "Alive" LED
+                                                  66:            BYTE                           ;Eight-bit byte to be displayed
+                                                  67:            BYTESTR:10                     ;Display string for binary version of BYTE
+                                                  68:            temp
+                                                  69:            endc
+                                                  70:    
+                                                  71:    ;;;;;;; Macro definitions ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+                                                  72:    
+                                                  73:    MOVLF   macro  literal,dest
+                                                  74:            movlw  literal
+                                                  75:            movwf  dest
+                                                  76:            endm
+                                                  77:    
+                                                  78:    POINT   macro  stringname
+                                                  79:            MOVLF  high stringname, TBLPTRH
+                                                  80:            MOVLF  low stringname, TBLPTRL
+                                                  81:            endm
+                                                  82:    
+                                                  83:    DISPLAY macro  register         ;Displays a given register in binary on LCD
+                                                  84:            movff  register,BYTE
+                                                  85:            call  ByteDisplay
+                                                  86:            endm
+                                                  87:            
+                                                  88:    ;;;;;;; Vectors ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+                                                  89:    
+                                                  90:            org  0x0000                    ;Reset vector
+0000  0000     NOP                                91:            nop 
+0002  EF0E     GOTO 0x1C                          92:            goto  Mainline
+0004  F000     NOP
+                                                  93:    
+                                                  94:            org  0x0008                    ;High priority interrupt vector
+0008  EF04     GOTO 0x8                           95:            goto  $                        ;Trap
+000A  F000     NOP
+                                                  96:    
+                                                  97:            org  0x0018                    ;Low priority interrupt vector
+0018  EF0C     GOTO 0x18                          98:            goto  $                        ;Trap
+001A  F000     NOP
+                                                  99:    
+                                                  100:   ;;;;;;; Mainline program ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+                                                  101:   
+                                                  102:   Mainline
+001C  D809     RCALL 0x30                         103:           rcall   Initial                 ; Initialize everything
+                                                  104:   Loop
+001E  748B     BTG LATC, 2, ACCESS                105:           btg     LATC,RC2                ; Toggle pin, to support measuring loop time
+0020  D86A     RCALL 0xF6                         106:           rcall   BlinkAlive              ; Blink "Alive" LED
+0022  0EAF     MOVLW 0xAF                         107:           movlw  B'10101111'              ;
+0024  CFE8     MOVFF WREG, 0x3                    108:           DISPLAY WREG
+0026  F003     NOP
+0028  EC8A     CALL 0x114, 0
+002A  F000     NOP
+002C  D86B     RCALL 0x104                        109:           rcall   LoopTime                ; Make looptime be ten milliseconds
+002E  D7F7     BRA 0x1E                           110:           bra     Loop
+                                                  111:   
+                                                  112:   ;;;;;;; Initial subroutine ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+                                                  113:   ;
+                                                  114:   ; This subroutine performs all initializations of variables and registers.
+                                                  115:   ;
+                                                  116:   ; NOTE: When setting up Ports, always initialize the respective Lat register
+                                                  117:   ;       to a known value!
+                                                  118:   ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+                                                  119:   
+                                                  120:   Initial
+0030  0E0E     MOVLW 0xE                          121:           MOVLF   B'00001110',TRISB       ; Set I/O for PORTB
+0032  6E93     MOVWF TRISB, ACCESS
+0034  0E00     MOVLW 0x0                          122:           MOVLF   B'00000000',LATB        ; Initialize PORTB
+0036  6E8A     MOVWF LATB, ACCESS
+0038  0E90     MOVLW 0x90                         123:           MOVLF   B'10010000',TRISC       ; Set I/0 for PORTC
+003A  6E94     MOVWF TRISC, ACCESS
+003C  0E80     MOVLW 0x80                         124:           MOVLF   B'10000000',LATC        ; Initialize PORTC
+003E  6E8B     MOVWF LATC, ACCESS
+0040  0E0F     MOVLW 0xF                          125:           MOVLF   B'00001111',TRISJ       ; Set I/O for PORTJ
+0042  6E9A     MOVWF TRISJ, ACCESS
+0044  9299     BCF TRISH, 1, ACCESS               126:           bcf     TRISH,1                 ; Set I/O for RH1
+0046  9499     BCF TRISH, 2, ACCESS               127:           bcf     TRISH,2                 ; Set I/O for RH2
+                                                  128:   
+0048  0E00     MOVLW 0x0                          129:           MOVLF   B'00000000',INTCON
+004A  6EF2     MOVWF INTCON, ACCESS
+004C  0E08     MOVLW 0x8                          130:           MOVLF   B'00001000',T0CON       ; Set up Timer0 for a looptime of 10 ms
+004E  6ED5     MOVWF T0CON, ACCESS
+0050  0E9E     MOVLW 0x9E                         131:           MOVLF   high Bignum,TMR0H       ; Writing binary 40536 to TMR0H / TMR0L
+0052  6ED7     MOVWF TMR0H, ACCESS
+0054  0E58     MOVLW 0x58                         132:           MOVLF   low Bignum,TMR0L
+0056  6ED6     MOVWF TMR0, ACCESS
+                                                  133:   
+0058  0EFA     MOVLW 0xFA                         134:           MOVLF   D'250',ALIVECNT         ; Initializing Alive counter
+005A  6E02     MOVWF 0x2, ACCESS
+005C  8ED5     BSF T0CON, 7, ACCESS               135:           bsf     T0CON,7                 ; Turning on Timer0
+                                                  136:   
+005E  D80C     RCALL 0x78                         137:           rcall   InitLCD                 ; Initialize LCD
+0060  D851     RCALL 0x104                        138:           rcall   LoopTime
+                                                  139:   
+0062  0E01     MOVLW 0x1                          140:           POINT   LCDs                    ;Hello
+0064  6EF7     MOVWF TBLPTRH, ACCESS
+0066  0E5C     MOVLW 0x5C
+0068  6EF6     MOVWF TBLPTR, ACCESS
+006A  D824     RCALL 0xB4                         141:           rcall   DisplayC
+006C  0E01     MOVLW 0x1                          142:           POINT   LCDs2                   ;World!
+006E  6EF7     MOVWF TBLPTRH, ACCESS
+0070  0E64     MOVLW 0x64
+0072  6EF6     MOVWF TBLPTR, ACCESS
+0074  D81F     RCALL 0xB4                         143:           rcall   DisplayC
+                                                  144:   
+0076  0012     RETURN 0                           145:           return
+                                                  146:   
+                                                  147:   ;;;;;;; InitLCD subroutine ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+                                                  148:   ;
+                                                  149:   ; Initialize the Optrex 8x2 character LCD.
+                                                  150:   ; First wait for 0.1 second, to get past display's power-on reset time.
+                                                  151:   ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+                                                  152:           
+                                                  153:   InitLCD
+0078  0E0A     MOVLW 0xA                          154:           MOVLF  10,COUNT                ;Wait 0.1 second
+007A  6E01     MOVWF 0x1, ACCESS
+                                                  155:   L2
+007C  D843     RCALL 0x104                        156:             rcall  LoopTime              ;Call LoopTime 10 times
+007E  0601     DECF 0x1, F, ACCESS                157:             decf  COUNT,F
+0080  E1FD     BNZ 0x7C                           158:           bnz	L2
+                                                  159:   
+0082  9290     BCF LATH, 1, ACCESS                160:           bcf     LATH,1                 ;RS=0 for command
+0084  0E01     MOVLW 0x1                          161:           POINT   LCDstr                 ;Set up table pointer to initialization string
+0086  6EF7     MOVWF TBLPTRH, ACCESS
+0088  0E40     MOVLW 0x40
+008A  6EF6     MOVWF TBLPTR, ACCESS
+008C  0008     TBLRD*                             162:           tblrd*                         ;Get first byte from string into TABLAT
+                                                  163:   L3
+008E  8490     BSF LATH, 2, ACCESS                164:             bsf   LATH,2                 ;Drive E high
+0090  CFF5     MOVFF TABLAT, LATJ                 165:             movff TABLAT,LATJ            ;Send upper nibble
+0092  FF91     NOP
+0094  9490     BCF LATH, 2, ACCESS                166:             bcf   LATH,2                 ;Drive E low so LCD will process input
+0096  D836     RCALL 0x104                        167:             rcall LoopTime               ;Wait ten milliseconds
+0098  8490     BSF LATH, 2, ACCESS                168:             bsf   LATH,2                 ;Drive E high
+009A  38F5     SWAPF TABLAT, W, ACCESS            169:             swapf TABLAT,W               ;Swap nibbles
+009C  6E91     MOVWF LATJ, ACCESS                 170:             movwf LATJ                   ;Send lower nibble
+009E  9490     BCF LATH, 2, ACCESS                171:             bcf   LATH,2                 ;Drive E low so LCD will process input
+00A0  D831     RCALL 0x104                        172:             rcall LoopTime               ;Wait ten milliseconds
+00A2  000B     TBLRD+*                            173:             tblrd+*                      ;Increment pointer and get next byte
+00A4  52F5     MOVF TABLAT, F, ACCESS             174:             movf  TABLAT,F               ;Is it zero?
+00A6  E1F3     BNZ 0x8E                           175:           bnz	L3
+00A8  0012     RETURN 0                           176:           return
+                                                  177:   
+                                                  178:   ;;;;;;; T40 subroutine ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+                                                  179:   ;
+                                                  180:   ; Pause for 40 microseconds  or 40/0.4 = 100 clock cycles.
+                                                  181:   ; Assumes 10/4 = 2.5 MHz internal clock rate.
+                                                  182:   ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+                                                  183:           
+                                                  184:   T40
+00AA  0E21     MOVLW 0x21                         185:           movlw  100/3                 ;Each REPEAT loop takes 3 cycles
+00AC  6E01     MOVWF 0x1, ACCESS                  186:           movwf  COUNT
+                                                  187:   L4
+00AE  0601     DECF 0x1, F, ACCESS                188:             decf  COUNT,F
+00B0  E1FE     BNZ 0xAE                           189:           bnz	L4
+00B2  0012     RETURN 0                           190:           return
+                                                  191:   
+                                                  192:   ;;;;;;;;DisplayC subroutine;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+                                                  193:   ;
+                                                  194:   ; This subroutine is called with TBLPTR containing the address of a constant
+                                                  195:   ; display string.  It sends the bytes of the string to the LCD.  The first
+                                                  196:   ; byte sets the cursor position.  The remaining bytes are displayed, beginning
+                                                  197:   ; at that position.
+                                                  198:   ; This subroutine expects a normal one-byte cursor-positioning code, 0xhh, or
+                                                  199:   ; an occasionally used two-byte cursor-positioning code of the form 0x00hh.
+                                                  200:   
+                                                  201:   DisplayC
+00B4  9290     BCF LATH, 1, ACCESS                202:             bcf   LATH,1                  ;Drive RS pin low for cursor-positioning code
+00B6  0008     TBLRD*                             203:             tblrd*                        ;Get byte from string into TABLAT
+00B8  52F5     MOVF TABLAT, F, ACCESS             204:             movf  TABLAT,F                ;Check for leading zero byte
+00BA  E101     BNZ 0xBE                           205:           bnz	L5
+00BC  000B     TBLRD+*                            206:           tblrd+*                       ;If zero, get next byte
+                                                  207:   L5
+00BE  8490     BSF LATH, 2, ACCESS                208:             bsf   LATH,2               ;Drive E pin high
+00C0  CFF5     MOVFF TABLAT, LATJ                 209:             movff TABLAT,LATJ         ;Send upper nibble
+00C2  FF91     NOP
+00C4  9490     BCF LATH, 2, ACCESS                210:             bcf   LATH,2               ;Drive E pin low so LCD will accept nibble
+00C6  8490     BSF LATH, 2, ACCESS                211:             bsf   LATH,2               ;Drive E pin high again
+00C8  38F5     SWAPF TABLAT, W, ACCESS            212:             swapf TABLAT,W             ;Swap nibbles
+00CA  6E91     MOVWF LATJ, ACCESS                 213:             movwf LATJ                 ;Write lower nibble
+00CC  9490     BCF LATH, 2, ACCESS                214:             bcf   LATH,2               ;Drive E pin low so LCD will process byte
+00CE  DFED     RCALL 0xAA                         215:             rcall T40                  ;Wait 40 usec
+00D0  8290     BSF LATH, 1, ACCESS                216:             bsf   LATH,1               ;Drive RS pin high for displayable characters
+00D2  000B     TBLRD+*                            217:             tblrd+*                    ;Increment pointer, then get next byte
+00D4  52F5     MOVF TABLAT, F, ACCESS             218:             movf  TABLAT,F             ;Is it zero?
+00D6  E1F3     BNZ 0xBE                           219:           bnz	L5
+00D8  0012     RETURN 0                           220:           return
+                                                  221:   
+                                                  222:   ;;;;;;; DisplayV subroutine ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+                                                  223:   ;
+                                                  224:   ; This subroutine is called with FSR0 containing the address of a variable
+                                                  225:   ; display string.  It sends the bytes of the string to the LCD.  The first
+                                                  226:   ; byte sets the cursor position.  The remaining bytes are displayed, beginning
+                                                  227:   ; at that position.
+                                                  228:   
+                                                  229:   DisplayV
+00DA  9290     BCF LATH, 1, ACCESS                230:           bcf     LATH,1                 ;Drive RS pin low for cursor positioning code
+                                                  231:   L7
+00DC  8490     BSF LATH, 2, ACCESS                232:             bsf   LATH,2                 ;Drive E pin high
+00DE  CFEF     MOVFF INDF0, LATJ                  233:             movff INDF0,LATJ             ;Send upper nibble
+00E0  FF91     NOP
+00E2  9490     BCF LATH, 2, ACCESS                234:             bcf   LATH,2                 ;Drive E pin low so LCD will accept nibble
+00E4  8490     BSF LATH, 2, ACCESS                235:             bsf   LATH,2                 ;Drive E pin high again
+00E6  38EF     SWAPF INDF0, W, ACCESS             236:             swapf INDF0,W                ;Swap nibbles
+00E8  6E91     MOVWF LATJ, ACCESS                 237:             movwf LATJ                   ;Write lower nibble
+00EA  9490     BCF LATH, 2, ACCESS                238:             bcf   LATH,2                 ;Drive E pin low so LCD will process byte
+00EC  DFDE     RCALL 0xAA                         239:             rcall T40                    ;Wait 40 usec
+00EE  8290     BSF LATH, 1, ACCESS                240:             bsf   LATH,1                 ;Drive RS pin high for displayable characters
+00F0  50EC     MOVF PREINC0, W, ACCESS            241:             movf  PREINC0,W              ;Increment pointer, then get next byte
+00F2  E1F4     BNZ 0xDC                           242:           bnz	L7
+00F4  0012     RETURN 0                           243:           return
+                                                  244:           
+                                                  245:   ;;;;;;; BlinkAlive subroutine ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+                                                  246:   ;
+                                                  247:   ; This subroutine briefly blinks the LED next to the PIC every two-and-a-half
+                                                  248:   ; seconds.
+                                                  249:   ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+                                                  250:   
+                                                  251:   BlinkAlive
+00F6  888A     BSF LATB, 4, ACCESS                252:           bsf     LATB,RB4       ; Turn off LED
+00F8  0602     DECF 0x2, F, ACCESS                253:           decf    ALIVECNT,F      ; Decrement loop counter and ...
+00FA  E103     BNZ 0x102                          254:           bnz     END1            ; return if not zero
+00FC  0EFA     MOVLW 0xFA                         255:           MOVLF   250,ALIVECNT    ; Reinitialize BLNKCNT
+00FE  6E02     MOVWF 0x2, ACCESS
+0100  988A     BCF LATB, 4, ACCESS                256:           bcf     LATB,RB4       ; Turn on LED for ten milliseconds every 2.5 sec
+                                                  257:   END1
+0102  0012     RETURN 0                           258:           return
+                                                  259:   
+                                                  260:   ;;;;;;; LoopTime subroutine ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+                                                  261:   ;
+                                                  262:   ; This subroutine waits for Timer0 to complete its ten millisecond count
+                                                  263:   ; sequence. It does so by waiting for sixteen-bit Timer0 to roll over. To obtain
+                                                  264:   ; a period of 10000/0.4 = 25000 clock periods, it needs to remove
+                                                  265:   ; 65536-25000 or 40536 counts from the sixteen-bit count sequence.  
+                                                  266:   ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+                                                  267:   
+                                                  268:   Bignum  equ     65536-25000
+                                                  269:   
+                                                  270:   LoopTime
+0104  A4F2     BTFSS INTCON, 2, ACCESS            271:           btfss 	INTCON,TMR0IF           ; Read Timer0 rollover flag and ...
+0106  D7FE     BRA 0x104                          272:           bra     LoopTime                ; Loop if timer has not rolled over
+0108  0E9E     MOVLW 0x9E                         273:           MOVLF  	high Bignum,TMR0H       ; Then write the timer values into
+010A  6ED7     MOVWF TMR0H, ACCESS
+010C  0E58     MOVLW 0x58                         274:           MOVLF  	low Bignum,TMR0L        ; the timer high and low registers
+010E  6ED6     MOVWF TMR0, ACCESS
+0110  94F2     BCF INTCON, 2, ACCESS              275:           bcf  	INTCON,TMR0IF           ; Clear Timer0 rollover flag
+0112  0012     RETURN 0                           276:           return
+                                                  277:   
+                                                  278:   ;;;;;;; ByteDisplay subroutine ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+                                                  279:   ;
+                                                  280:   ; Display whatever is in BYTE as a binary number.
+                                                  281:   
+                                                  282:   ByteDisplay
+0114  0E01     MOVLW 0x1                          283:           POINT   BYTE_1                 ;Display "BYTE="
+0116  6EF7     MOVWF TBLPTRH, ACCESS
+0118  0E48     MOVLW 0x48
+011A  6EF6     MOVWF TBLPTR, ACCESS
+011C  DFCB     RCALL 0xB4                         284:           rcall   DisplayC
+011E  EE00     LFSR 0, 0xC                        285:           lfsr    0,BYTESTR+8
+0120  F00C     NOP
+                                                  286:   L10
+0122  6AE8     CLRF WREG, ACCESS                  287:             clrf  WREG
+0124  3203     RRCF 0x3, F, ACCESS                288:             rrcf  BYTE,F                 ;Move bit into carry
+0126  36E8     RLCF WREG, F, ACCESS               289:             rlcf  WREG,F                 ;and from there into WREG
+0128  0930     IORLW 0x30                         290:             iorlw 0x30                   ;Convert to ASCII
+012A  6EED     MOVWF POSTDEC0, ACCESS             291:             movwf POSTDEC0               ; and move to string
+012C  50E9     MOVF FSR0, W, ACCESS               292:             movf  FSR0L,W                ;Done?
+012E  0804     SUBLW 0x4                          293:             sublw low BYTESTR
+0130  E1F8     BNZ 0x122                          294:           bnz	L10
+                                                  295:   
+0132  EE00     LFSR 0, 0x4                        296:           lfsr    0,BYTESTR              ;Set pointer to display string
+0134  F004     NOP
+0136  0EC0     MOVLW 0xC0                         297:           MOVLF   0xc0,BYTESTR           ;Add cursor-positioning code
+0138  6E04     MOVWF 0x4, ACCESS
+013A  6A0D     CLRF 0xD, ACCESS                   298:           clrf    BYTESTR+9              ;and end-of-string terminator
+013C  DFCE     RCALL 0xDA                         299:           rcall   DisplayV
+013E  0012     RETURN 0                           300:           return
+                                                  301:   
+                                                  302:   ;;;;;;; Constant strings ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+                                                  303:   
+0140  3233     RRCF 0x33, F, ACCESS               304:   LCDstr  db  0x33,0x32,0x28,0x01,0x0c,0x06,0x00  ;Initialization string for LCD
+0142  0128     MOVLB 0x8
+0144  060C     DECF 0xC, F, ACCESS
+0146  0000     NOP
+0148  4280     RRNCF PORTA, F, ACCESS             305:   BYTE_1  db  "\x80BYTE=   \x00"         ;Write "BYTE=" to first line of LCD
+014A  5459     SUBFWB 0x59, W, ACCESS
+014C  3D45     INCFSZ 0x45, W, BANKED
+014E  2020     ADDWFC 0x20, W, ACCESS
+0152  2080     ADDWFC PORTA, W, ACCESS            306:   LCDcl   db  "\x80        \x00"
+0154  2020     ADDWFC 0x20, W, ACCESS
+0156  2020     ADDWFC 0x20, W, ACCESS
+0158  2020     ADDWFC 0x20, W, ACCESS
+015C  4880     INFSNZ PORTA, W, ACCESS            307:   LCDs    db  "\x80Hello\x00"
+015E  6C65     NEGF BAUDCON1, ACCESS
+0160  6F6C     MOVWF 0x6C, BANKED
+0162  0000     NOP
+0164  57C0     SUBFWB 0xC0, F, BANKED             308:   LCDs2   db  "\xC0World!\x00"
+0166  726F     BTG CCPR7, 1, ACCESS
+0168  646C     CPFSGT PR4, ACCESS
+                                                  309:   ;;;;;;; End of Program ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+                                                  310:   
+                                                  311:           end
