@@ -137,7 +137,7 @@ L3
 	BSF	LATB,7	; Turn ON D4
 	MOVLF	100,COUNT
 L4
-        rcall	Wait10ms              ;Call Wait10ms 10 times (100ms)
+        rcall	Wait10ms              ;Call Wait10ms 100 times (100ms)
         decf	COUNT,F
         bnz	L4
 	BCF	LATB,7	; Turn OFF D4
