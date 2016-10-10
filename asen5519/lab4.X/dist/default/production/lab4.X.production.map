@@ -1,0 +1,90 @@
+MPLINK 5.08, LINKER
+Linker Map File - Created Sun Oct 09 23:12:01 2016
+
+                                 Section Info
+                  Section       Type    Address   Location Size(Bytes)
+                ---------  ---------  ---------  ---------  ---------
+                   .org_0       code   0x000000    program   0x000006
+                   .cinit    romdata   0x000006    program   0x000002
+                   .org_1       code   0x000008    program   0x000004
+                   .org_2       code   0x000018    program   0x000142
+.config_300000_BUILD/DEFAULT/PRODUCTION/BJELLA_    romdata   0x300000    program   0x000001
+.config_300001_BUILD/DEFAULT/PRODUCTION/BJELLA_    romdata   0x300001    program   0x000001
+.config_300002_BUILD/DEFAULT/PRODUCTION/BJELLA_    romdata   0x300002    program   0x000001
+.config_300003_BUILD/DEFAULT/PRODUCTION/BJELLA_    romdata   0x300003    program   0x000001
+.config_300005_BUILD/DEFAULT/PRODUCTION/BJELLA_    romdata   0x300005    program   0x000001
+
+
+
+                              Program Memory Usage 
+                               Start         End      
+                           ---------   ---------      
+                            0x000000    0x00000b      
+                            0x000018    0x000159      
+                            0x300000    0x300003      
+                            0x300005    0x300005      
+            339 out of 132120 program addresses used, program memory utilization is 0%
+
+
+
+                              Symbols - Sorted by Name
+                     Name    Address   Location    Storage File                     
+                ---------  ---------  ---------  --------- ---------                
+                  CLRVAL1   0x000116    program     static C:\repos\school\asen5519\lab4.X\bjella_lab4.asm
+                Check_SW1   0x000108    program     static C:\repos\school\asen5519\lab4.X\bjella_lab4.asm
+                 DisplayC   0x00011a    program     static C:\repos\school\asen5519\lab4.X\bjella_lab4.asm
+                  InitLCD   0x0000a6    program     static C:\repos\school\asen5519\lab4.X\bjella_lab4.asm
+                  Initial   0x00003e    program     static C:\repos\school\asen5519\lab4.X\bjella_lab4.asm
+                       L1   0x000052    program     static C:\repos\school\asen5519\lab4.X\bjella_lab4.asm
+                       L2   0x00005e    program     static C:\repos\school\asen5519\lab4.X\bjella_lab4.asm
+                       L3   0x00006c    program     static C:\repos\school\asen5519\lab4.X\bjella_lab4.asm
+                       L4   0x00007a    program     static C:\repos\school\asen5519\lab4.X\bjella_lab4.asm
+                       L5   0x0000aa    program     static C:\repos\school\asen5519\lab4.X\bjella_lab4.asm
+                       L6   0x0000bc    program     static C:\repos\school\asen5519\lab4.X\bjella_lab4.asm
+                       L7   0x000124    program     static C:\repos\school\asen5519\lab4.X\bjella_lab4.asm
+                   LCDstr   0x000140    program     static C:\repos\school\asen5519\lab4.X\bjella_lab4.asm
+                     Loop   0x00001e    program     static C:\repos\school\asen5519\lab4.X\bjella_lab4.asm
+                Loop0d2ms   0x0000e6    program     static C:\repos\school\asen5519\lab4.X\bjella_lab4.asm
+                    Loop1   0x000024    program     static C:\repos\school\asen5519\lab4.X\bjella_lab4.asm
+                 Loop10ms   0x0000fe    program     static C:\repos\school\asen5519\lab4.X\bjella_lab4.asm
+                   MSUNIT   0x000156    program     static C:\repos\school\asen5519\lab4.X\bjella_lab4.asm
+                 Mainline   0x00001c    program     static C:\repos\school\asen5519\lab4.X\bjella_lab4.asm
+                     NAME   0x000148    program     static C:\repos\school\asen5519\lab4.X\bjella_lab4.asm
+                     PWEQ   0x000150    program     static C:\repos\school\asen5519\lab4.X\bjella_lab4.asm
+                Wait0d2ms   0x0000d8    program     static C:\repos\school\asen5519\lab4.X\bjella_lab4.asm
+                 Wait10ms   0x0000f0    program     static C:\repos\school\asen5519\lab4.X\bjella_lab4.asm
+             _.org_1_0008   0x000008    program     static C:\repos\school\asen5519\lab4.X\bjella_lab4.asm
+             _.org_2_0018   0x000018    program     static C:\repos\school\asen5519\lab4.X\bjella_lab4.asm
+
+
+
+                              Symbols - Sorted by Address
+                     Name    Address   Location    Storage File                     
+                ---------  ---------  ---------  --------- ---------                
+             _.org_1_0008   0x000008    program     static C:\repos\school\asen5519\lab4.X\bjella_lab4.asm
+             _.org_2_0018   0x000018    program     static C:\repos\school\asen5519\lab4.X\bjella_lab4.asm
+                 Mainline   0x00001c    program     static C:\repos\school\asen5519\lab4.X\bjella_lab4.asm
+                     Loop   0x00001e    program     static C:\repos\school\asen5519\lab4.X\bjella_lab4.asm
+                    Loop1   0x000024    program     static C:\repos\school\asen5519\lab4.X\bjella_lab4.asm
+                  Initial   0x00003e    program     static C:\repos\school\asen5519\lab4.X\bjella_lab4.asm
+                       L1   0x000052    program     static C:\repos\school\asen5519\lab4.X\bjella_lab4.asm
+                       L2   0x00005e    program     static C:\repos\school\asen5519\lab4.X\bjella_lab4.asm
+                       L3   0x00006c    program     static C:\repos\school\asen5519\lab4.X\bjella_lab4.asm
+                       L4   0x00007a    program     static C:\repos\school\asen5519\lab4.X\bjella_lab4.asm
+                  InitLCD   0x0000a6    program     static C:\repos\school\asen5519\lab4.X\bjella_lab4.asm
+                       L5   0x0000aa    program     static C:\repos\school\asen5519\lab4.X\bjella_lab4.asm
+                       L6   0x0000bc    program     static C:\repos\school\asen5519\lab4.X\bjella_lab4.asm
+                Wait0d2ms   0x0000d8    program     static C:\repos\school\asen5519\lab4.X\bjella_lab4.asm
+                Loop0d2ms   0x0000e6    program     static C:\repos\school\asen5519\lab4.X\bjella_lab4.asm
+                 Wait10ms   0x0000f0    program     static C:\repos\school\asen5519\lab4.X\bjella_lab4.asm
+                 Loop10ms   0x0000fe    program     static C:\repos\school\asen5519\lab4.X\bjella_lab4.asm
+                Check_SW1   0x000108    program     static C:\repos\school\asen5519\lab4.X\bjella_lab4.asm
+                  CLRVAL1   0x000116    program     static C:\repos\school\asen5519\lab4.X\bjella_lab4.asm
+                 DisplayC   0x00011a    program     static C:\repos\school\asen5519\lab4.X\bjella_lab4.asm
+                       L7   0x000124    program     static C:\repos\school\asen5519\lab4.X\bjella_lab4.asm
+                   LCDstr   0x000140    program     static C:\repos\school\asen5519\lab4.X\bjella_lab4.asm
+                     NAME   0x000148    program     static C:\repos\school\asen5519\lab4.X\bjella_lab4.asm
+                     PWEQ   0x000150    program     static C:\repos\school\asen5519\lab4.X\bjella_lab4.asm
+                   MSUNIT   0x000156    program     static C:\repos\school\asen5519\lab4.X\bjella_lab4.asm
+
+

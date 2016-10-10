@@ -51,17 +51,17 @@ OBJECTDIR=build/${CND_CONF}/${IMAGE_TYPE}
 DISTDIR=dist/${CND_CONF}/${IMAGE_TYPE}
 
 # Source Files Quoted if spaced
-SOURCEFILES_QUOTED_IF_SPACED=
+SOURCEFILES_QUOTED_IF_SPACED=bjella_lab4.asm
 
 # Object Files Quoted if spaced
-OBJECTFILES_QUOTED_IF_SPACED=
-POSSIBLE_DEPFILES=
+OBJECTFILES_QUOTED_IF_SPACED=${OBJECTDIR}/bjella_lab4.o
+POSSIBLE_DEPFILES=${OBJECTDIR}/bjella_lab4.o.d
 
 # Object Files
-OBJECTFILES=
+OBJECTFILES=${OBJECTDIR}/bjella_lab4.o
 
 # Source Files
-SOURCEFILES=
+SOURCEFILES=bjella_lab4.asm
 
 
 CFLAGS=
@@ -88,7 +88,23 @@ MP_LINKER_DEBUG_OPTION=
 # ------------------------------------------------------------------------------------
 # Rules for buildStep: assemble
 ifeq ($(TYPE_IMAGE), DEBUG_RUN)
+${OBJECTDIR}/bjella_lab4.o: bjella_lab4.asm  nbproject/Makefile-${CND_CONF}.mk
+	@${MKDIR} "${OBJECTDIR}" 
+	@${RM} ${OBJECTDIR}/bjella_lab4.o.d 
+	@${RM} ${OBJECTDIR}/bjella_lab4.o 
+	@${FIXDEPS} dummy.d -e "${OBJECTDIR}/bjella_lab4.err" $(SILENT) -c ${MP_AS} $(MP_EXTRA_AS_PRE) -d__DEBUG -d__MPLAB_DEBUGGER_PK3=1 -q -p$(MP_PROCESSOR_OPTION)  -l\"${OBJECTDIR}/bjella_lab4.lst\" -e\"${OBJECTDIR}/bjella_lab4.err\" $(ASM_OPTIONS)    -o\"${OBJECTDIR}/bjella_lab4.o\" \"bjella_lab4.asm\" 
+	@${DEP_GEN} -d "${OBJECTDIR}/bjella_lab4.o"
+	@${FIXDEPS} "${OBJECTDIR}/bjella_lab4.o.d" $(SILENT) -rsi ${MP_AS_DIR} -c18 
+	
 else
+${OBJECTDIR}/bjella_lab4.o: bjella_lab4.asm  nbproject/Makefile-${CND_CONF}.mk
+	@${MKDIR} "${OBJECTDIR}" 
+	@${RM} ${OBJECTDIR}/bjella_lab4.o.d 
+	@${RM} ${OBJECTDIR}/bjella_lab4.o 
+	@${FIXDEPS} dummy.d -e "${OBJECTDIR}/bjella_lab4.err" $(SILENT) -c ${MP_AS} $(MP_EXTRA_AS_PRE) -q -p$(MP_PROCESSOR_OPTION)  -l\"${OBJECTDIR}/bjella_lab4.lst\" -e\"${OBJECTDIR}/bjella_lab4.err\" $(ASM_OPTIONS)    -o\"${OBJECTDIR}/bjella_lab4.o\" \"bjella_lab4.asm\" 
+	@${DEP_GEN} -d "${OBJECTDIR}/bjella_lab4.o"
+	@${FIXDEPS} "${OBJECTDIR}/bjella_lab4.o.d" $(SILENT) -rsi ${MP_AS_DIR} -c18 
+	
 endif
 
 # ------------------------------------------------------------------------------------

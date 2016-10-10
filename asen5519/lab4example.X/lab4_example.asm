@@ -145,7 +145,6 @@ Initial
         return
 
 ;;;;;;; InitLCD subroutine ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;
 ; Initialize the Optrex 8x2 character LCD.
 ; First wait for 0.1 second, to get past display's power-on reset time.
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
