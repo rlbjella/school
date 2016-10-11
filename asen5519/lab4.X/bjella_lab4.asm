@@ -115,31 +115,15 @@ Initial
 	MOVLF   B'00001111',TRISJ       ; Set I/O for PORTJ
         bcf     TRISH,1                 ; Set I/O for RH1
         bcf     TRISH,2                 ; Set I/O for RH2
-	MOVLF	100,COUNT
-L1
-        rcall	Wait10ms              ;Call Wait10ms 100 times (100ms)
-        decf	COUNT,F
-        bnz	L1
+	RCALL	Wait1sec
 	BSF	LATB,5	; Turn ON D2
-	MOVLF	100,COUNT
-L2
-        rcall	Wait10ms              ;Call Wait10ms 100 times (100ms)
-        decf	COUNT,F
-        bnz	L2
+	RCALL	Wait1sec
 	BCF	LATB,5	; Turn OFF D2
 	BSF	LATB,6	; Turn ON D3
-	MOVLF	100,COUNT
-L3
-        rcall	Wait10ms              ;Call Wait10ms 100 times (100ms)
-        decf	COUNT,F
-        bnz	L3
+	RCALL	Wait1sec
 	BCF	LATB,6	; Turn OFF D3
 	BSF	LATB,7	; Turn ON D4
-	MOVLF	100,COUNT
-L4
-        rcall	Wait10ms              ;Call Wait10ms 10 times (100ms)
-        decf	COUNT,F
-        bnz	L4
+	RCALL	Wait1sec
 	BCF	LATB,7	; Turn OFF D4
 	rcall   InitLCD ; Initialize LCD
 	; Display name
@@ -158,9 +142,9 @@ L4
 ; First wait for 0.1 second, to get past display's power-on reset time.
         
 InitLCD
-        MOVLF	10,COUNT                ;Wait 0.1 second
+        MOVLF	100,COUNT                ;Wait 0.1 second
 L5
-        rcall	Wait10ms              ;Call Wait10ms 10 times (100ms)
+        rcall	Wait1ms              ;Call Wait1ms 100 times (100ms)
         decf	COUNT,F
         bnz	L5
 
@@ -171,16 +155,34 @@ L6
         bsf	LATH,2                 ;Drive E high
         movff	TABLAT,LATJ            ;Send upper nibble
         bcf	LATH,2                 ;Drive E low so LCD will process input
-        rcall	Wait10ms               ;Wait ten milliseconds
+        rcall	Wait1ms               ;Wait ten milliseconds
         bsf	LATH,2                 ;Drive E high
         swapf	TABLAT,W               ;Swap nibbles
         movwf	LATJ                   ;Send lower nibble
         bcf	LATH,2                 ;Drive E low so LCD will process input
-        rcall	Wait10ms               ;Wait ten milliseconds
+        rcall	Wait1ms               ;Wait ten milliseconds
         tblrd+*                      ;Increment pointer and get next byte
         movf	TABLAT,F               ;Is it zero?
         bnz	L6
         return
+	
+;;;;;;; Wait1sec subroutine ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+; Subroutine to wait 1 sec
+				
+Wait1sec
+BIGNUM	EQU	65536-39063
+	MOVLW	B'00000101'
+	MOVWF	T0CON,0
+	MOVLW	high BIGNUM
+	MOVWF	TMR0H,0
+	MOVLW	low BIGNUM
+	MOVWF	TMR0L
+	BSF	T0CON,7,0
+Loop2	
+	BTFSS	INTCON,TMR0IF,0	;loop until interrupt flag
+	BRA	Loop2
+	BCF	T0CON,7,0   ; turn off timer
+	BCF	INTCON,TMR0IF,0	;clear the IF
 
 ;;;;;;; Wait0d2ms subroutine ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; Subroutine to wait 0.2 ms		
@@ -202,8 +204,8 @@ Loop0d2ms
 	
 ;;;;;;; Wait10ms subroutine ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; Subroutine to wait 10 ms		
-Wait10ms
-MIDNUM	EQU	65536-12500
+Wait1ms
+MIDNUM	EQU	65536-1250
 	MOVLW	B'00000000' ;set prescaler
 	MOVWF	T0CON,0
 	MOVLW	high MIDNUM
@@ -211,9 +213,9 @@ MIDNUM	EQU	65536-12500
 	MOVLW	low MIDNUM
 	MOVWF	TMR0L
 	BSF	T0CON,7,0
-Loop10ms	
+Loop1ms	
 	BTFSS	INTCON,TMR0IF,0	;loop until interrupt flag
-	BRA	Loop10ms
+	BRA	Loop1ms
 	BCF	T0CON,7,0   ; turn off timer
 	BCF	INTCON,TMR0IF,0	;clear the IF
 	return
