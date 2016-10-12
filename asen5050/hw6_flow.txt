@@ -1,0 +1,11 @@
+GIVEN: initial state (UTC, orbital elements)
+1.	Compute initial mean anomaly
+2. 	Create array of mean anomalies using orbital mean motion
+3. 	Compute array of Greenwich sidereal time for each time
+3. 	Compute true anomaly for each mean anomaly (gives all orbital elements
+	for each time point)
+4. 	Compute LLA from orbital elements at each time (elements to ECI, ECI to
+	ECEF, ECEF to LLA)
+5.	Plot it
+6. 	For problem 2, use ECEF to TOPO function to find the first time elevation
+	from Boulder is greater than zero (first pass over Boulder).
