@@ -1,3 +1,0 @@
-build/default/production/lab3_orig.o:  \
-	C:/Users/Russell/repos/school/asen5519/lab3.X/lab3_orig.asm  \
-
