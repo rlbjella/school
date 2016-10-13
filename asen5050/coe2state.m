@@ -23,7 +23,7 @@ function [Rijk,Vijk] = coe2state(semimajor,ecc,inc,raan,arg_peri,true,mu)
 % Check inputs and adjust for special cases
 if (ecc == 0 && inc == 0)   % Circular equatorial
     raan = 0;
-    arg_peri = 0
+    arg_peri = 0;
 end
 if (ecc == 0 && inc ~= 0)   % Circular inclined
     arg_peri = 0;
