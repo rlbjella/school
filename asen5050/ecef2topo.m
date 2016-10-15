@@ -32,14 +32,15 @@ y = deg2rad(lon);   % brevity
 rot3 = [cos(y) sin(y) 0;-sin(y) cos(y) 0;0 0 1];
 
 % Convert to SEZ
-sez = rot2*rot3*rho_ecef;
+mid = rot3*rho_ecef;
+sez = rot2*mid;
 sez_mag = norm(sez);    % magnitude of position vector [km]
 
 % Compute elevation
 el = asind(sez(3)/sez_mag);
 % Compute azimuth with quadrant check
 sin_az = sez(2) / sqrt(sez(1)^2+sez(2)^2);
-cos_az = -sez(2) / sqrt(sez(1)^2+sez(2)^2);
+cos_az = -sez(1) / sqrt(sez(1)^2+sez(2)^2);
 azrad = atan2(sin_az,cos_az);
 az = rad2deg(azrad);
 
