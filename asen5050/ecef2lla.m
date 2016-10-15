@@ -1,4 +1,4 @@
-function [lla] = ecef2lla(ecef)
+function [lat,lon,alt] = ecef2lla(ecef)
 %BEGINHEADER
 % SOURCE
 %   /mnt/c/repos/school/ecef2lla.m
@@ -9,7 +9,9 @@ function [lla] = ecef2lla(ecef)
 % INPUTS
 %   ecef = ECEF position vector [km]
 % OUTPUTS
-%   lla = latitude, longitude, and altitude [deg,deg,km]
+%   lat = geocentric latitude [deg]
+%   lon = longitude [deg]
+%   alt = altitude above Earth surface [km]
 %ENDHEADER
 
 % Compute distance vector to ecef position
@@ -27,6 +29,8 @@ phi = asin(z/r);
 h = r - 6378.1363;
 
 % Construct output
-lla = [rad2deg(phi) rad2deg(lambda) h]';
+lat = rad2deg(phi);
+lon = rad2deg(lambda);
+alt = h;
 
 end

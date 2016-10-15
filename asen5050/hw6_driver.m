@@ -39,22 +39,22 @@ lon = zeros(length(time),1);
 true = zeros(length(time),1);
 % Compute all anomalies for the time period
 % Then, compute ECEF and LLA positions
-for i = 1:length(time)
+for k = 1:length(time)
     % Compute anomalies
-    [true(i),mean,ecc] = time2anomaly(time(i),a,e,mu);
+    mean = M1 + n*time(k);
+    [true(k),ecc,mean,t_p,r] = anomalies(mean,'mean',a,e,mu,1);
     % Compute ECI position
-    [Rijk,Vijk] = coe2state(a,e,i,Omega,omega,true(i),mu);
+    [Rijk,Vijk] = coe2state(a,e,i,Omega,omega,true(k),mu);
     % Compute Greenwich sidereal time and ECEF position
-    theta = mod(theta1+omega_E*time(i),360);
+    theta = mod(theta1+omega_E*time(k),360);
     pos_ecef = eci2ecef(Rijk, theta);
     % Compute LLA
-    lla = ecef2lla(pos_ecef);
-    lat(i) = lla(1);
-    lon(i) = lla(2);
+    [lat(k),lon(k),~] = ecef2lla(pos_ecef);
 end
 
 % Plot latitude and longitude
-worldmap world
-load coastlines
-plotm(coastlat,coastlon)
-plotm(lat,lon,'r')
+figure
+hold on
+grid on
+plot(worldmap2384(:,1),worldmap2384(:,2),'g')
+plot(lon,lat,'.')
