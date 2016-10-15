@@ -23,7 +23,7 @@ if (length(pos_eci) ~= 3)
 end
 
 % Construct transformation matrix
-x = deg2rad(theta_GST);  % brevity
+x = deg2rad(theta_GST);  % brevity, use rads
 rot3 = [cos(x) sin(x) 0;-sin(x) cos(x) 0;0 0 1];
 
 % Compute ECEF position

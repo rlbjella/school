@@ -57,4 +57,4 @@ figure
 hold on
 grid on
 plot(worldmap2384(:,1),worldmap2384(:,2),'g')
-plot(lon,lat,'.')
+plot(lon,lat)
