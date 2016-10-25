@@ -106,7 +106,7 @@ alt_min = r_p - RE;
 
 % Convert to degrees if input parameter is set
 if(deg)
-    theta = rad2deg(true);
+    theta = rad2deg(theta);
     mean = rad2deg(mean);
     ecc = rad2deg(ecc);
     Omega = rad2deg(Omega);

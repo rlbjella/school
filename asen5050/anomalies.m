@@ -28,7 +28,7 @@ function [true,ecc,mean,time,r] = anomalies(value,unit,a,e,mu,deg)
 %% Interpret input unit and perform initial calculations
 unit = lower(unit);
 if (strcmp(unit,'eccentric'))
-    unit = 'eccentric';
+    unit = 'ecc';
 end
 % Sanity check inputs
 %%%%%%%%% TO DO %%%%%%%%%%
