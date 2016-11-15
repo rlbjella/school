@@ -39,19 +39,7 @@ int main () {
 		std::cout << "Size of char100k.bin: " << results2.st_size << "\n";
 	}
 
-	// Test with double type
-	double array[10000];
-	cout << "\nSize of 10,000 element double array: " << sizeof(array) << "\n";
-	// Write to binary file
-	ofstream out;
-	out.open("double_array.bin", ios::out | ios::binary);
-	out.write(array, sizeof(array));
-	out.close();
-	// Get file size
-	struct stat results;
-	if(stat("double_array.bin", &results) == 0) {
-		cout << "Size of double array binary file: " << results.st_size << "\n";
-	}
+
 
 
 }

@@ -7,8 +7,8 @@ function sun_angle = diode2sun(a,b,c,d)
 
 % Compute vector components in plane
 sigma = sum([a b c d]);
-x = ((b+c)-(a+d))/sigma;
-y = ((a+b)-(c+d))/sigma;
+x = (((b+c)-(a+d))/sigma)*sind(45);
+y = (((a+b)-(c+d))/sigma)*sind(45);
 
 % Compute vector component along boresight
 z = sqrt(1-x^2-y^2);
