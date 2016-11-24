@@ -45,7 +45,7 @@ dp = 0.3;
 d = dp+da;
 wa = 2.65;
 theta_real = -2:0.0001:2;
-theta_real = -20:0.1:20;
+%theta_real = -45:0.1:45;
 theta1 = 45 - theta_real;
 theta2 = 45 + theta_real;
 I1 = (wa - d*tand(theta1))/wa;
@@ -69,6 +69,8 @@ fprintf('I1 no aperture standard deviation from linear approximation: %f\n',std(
 I3 = (wa - da*tand(45))/wa;
 I4 = (wa - da*tand(45))/wa;
 theta_calc = zeros(length(theta_real),1);
+x = zeros(length(theta_real),1);
+y = zeros(length(theta_real),1);
 error = zeros(length(theta_real),1);
 for i = 1:length(theta_real)
     theta_calc(i) = diode2sun(I3,I1(i),I4,I2(i));
@@ -76,8 +78,8 @@ for i = 1:length(theta_real)
 end
 
 figure(1);hold on;grid on;
-plot(theta_real,error*60);
-xlabel('Real sun angle [deg]');ylabel('Error [arcmin]');
+plot(theta_real,error);
+xlabel('Real sun angle [deg]');ylabel('Error [deg]');
 
 figure(2);hold on;grid on;
 plot(theta_real,I1);plot(theta_real,I2);
