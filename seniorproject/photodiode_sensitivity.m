@@ -90,3 +90,5 @@ plot(theta_real,I1_raw,'b--');plot(theta_real,I2_raw,'r--');
 figure(3);hold on;grid on;
 plot(theta_real,theta_calc);
 xlabel('Real sun angle [deg]');ylabel('Calculated sun angle [deg]');
+
+%% Improved and simplified part 2
