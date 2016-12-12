@@ -38,7 +38,7 @@ end
 % Earth radius
 %%%%%%%% TODO %%%%%%%%%
 % Add support for altitude above other central bodies
-RE = 6378;      % [km]
+RE = 6378.14;      % [km]
 period = 2*pi*sqrt(semimajor^3/mu);
 energy = -mu/(2*semimajor);
 p = semimajor*(1-ecc^2);
