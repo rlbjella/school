@@ -1,21 +1,11 @@
 function [F_es,F_em,F_ms] = calc_force(pos_s,pos_m)
-%BEGINHEADER
-% SOURCE
-%   /mnt/c/repos/schoo/asen5050/calc_force.m
-% USAGE
-%   [F_es,F_em,F_ms] = calc_force(pos_s,pos_m)
-% DESCRIPTION
-%   Given position vectors of a spacecraft and the moon, compute the
-%   gravitational force of the Earth on both as well as the force exerted
-%   by the moon on the satellite
-% INPUTS
-%   a = input [unit]
-% OUTPUTS
-%   y = output [unit]
-%ENDHEADER
+% Russell Bjella
+% ASEN 5050 Final Project
+% Three body integrator
+% Force calculator
 
 % Constants
-G = 6.674e-11/1000^3;          % Gravitational constant
+G = 6.674e-11;          % Gravitational constant
 M_m = 7.34767309e22;    % Mass of the moon [kg]
 M_e = 5.97219e24;       % Mass of the Earth [kg]
 M_s = 28833;            % Mass of Apollo lunar module [kg]

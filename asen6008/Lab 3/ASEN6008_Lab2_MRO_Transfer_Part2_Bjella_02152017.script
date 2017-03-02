@@ -1,0 +1,178 @@
+%General Mission Analysis Tool(GMAT) Script
+%Created: 2017-02-15 13:42:33
+
+
+%----------------------------------------
+%---------- Spacecraft
+%----------------------------------------
+
+Create Spacecraft MRO;
+GMAT MRO.DateFormat = UTCGregorian;
+GMAT MRO.Epoch = '10 Aug 2005 12:00:00.000';
+GMAT MRO.CoordinateSystem = EarthICRF;
+GMAT MRO.DisplayStateType = Cartesian;
+GMAT MRO.X = 0.001;
+GMAT MRO.Y = 0.001;
+GMAT MRO.Z = 0.0009999999999999996;
+GMAT MRO.VX = 0.001;
+GMAT MRO.VY = 0.001;
+GMAT MRO.VZ = 0.0009999999999999996;
+GMAT MRO.DryMass = 850;
+GMAT MRO.Cd = 2.2;
+GMAT MRO.Cr = 1.8;
+GMAT MRO.DragArea = 15;
+GMAT MRO.SRPArea = 1;
+GMAT MRO.NAIFId = -10001001;
+GMAT MRO.NAIFIdReferenceFrame = -9001001;
+GMAT MRO.OrbitColor = Red;
+GMAT MRO.TargetColor = Teal;
+GMAT MRO.EstimationStateType = 'Cartesian';
+GMAT MRO.OrbitErrorCovariance = [ 1e+070 0 0 0 0 0 ; 0 1e+070 0 0 0 0 ; 0 0 1e+070 0 0 0 ; 0 0 0 1e+070 0 0 ; 0 0 0 0 1e+070 0 ; 0 0 0 0 0 1e+070 ];
+GMAT MRO.CdSigma = 1e+070;
+GMAT MRO.CrSigma = 1e+070;
+GMAT MRO.Id = 'SatId';
+GMAT MRO.Attitude = CoordinateSystemFixed;
+GMAT MRO.SPADSRPScaleFactor = 1;
+GMAT MRO.ModelFile = 'aura.3ds';
+GMAT MRO.ModelOffsetX = 0;
+GMAT MRO.ModelOffsetY = 0;
+GMAT MRO.ModelOffsetZ = 0;
+GMAT MRO.ModelRotationX = 0;
+GMAT MRO.ModelRotationY = 0;
+GMAT MRO.ModelRotationZ = 0;
+GMAT MRO.ModelScale = 1;
+GMAT MRO.AttitudeDisplayStateType = 'Quaternion';
+GMAT MRO.AttitudeRateDisplayStateType = 'AngularVelocity';
+GMAT MRO.AttitudeCoordinateSystem = EarthMJ2000Eq;
+GMAT MRO.EulerAngleSequence = '321';
+
+
+%----------------------------------------
+%---------- ForceModels
+%----------------------------------------
+
+Create ForceModel PropMRO_ForceModel;
+GMAT PropMRO_ForceModel.CentralBody = Sun;
+GMAT PropMRO_ForceModel.PointMasses = {Sun};
+GMAT PropMRO_ForceModel.Drag = None;
+GMAT PropMRO_ForceModel.SRP = Off;
+GMAT PropMRO_ForceModel.RelativisticCorrection = Off;
+GMAT PropMRO_ForceModel.ErrorControl = RSSStep;
+
+%----------------------------------------
+%---------- Propagators
+%----------------------------------------
+
+Create Propagator PropMRO;
+GMAT PropMRO.FM = PropMRO_ForceModel;
+GMAT PropMRO.Type = RungeKutta89;
+GMAT PropMRO.InitialStepSize = 60;
+GMAT PropMRO.Accuracy = 9.999999999999999e-012;
+GMAT PropMRO.MinStep = 0.001;
+GMAT PropMRO.MaxStep = 86400;
+GMAT PropMRO.MaxStepAttempts = 50;
+GMAT PropMRO.StopIfAccuracyIsViolated = true;
+
+%----------------------------------------
+%---------- Burns
+%----------------------------------------
+
+Create ImpulsiveBurn EarthDeparture;
+GMAT EarthDeparture.CoordinateSystem = EarthMJ2000Ec;
+GMAT EarthDeparture.Element1 = 2.717408;
+GMAT EarthDeparture.Element2 = 2.642931;
+GMAT EarthDeparture.Element3 = 1.236233;
+GMAT EarthDeparture.DecrementMass = false;
+
+
+GMAT EarthDeparture.Isp = 300;
+GMAT EarthDeparture.GravitationalAccel = 9.810000000000001;
+
+%----------------------------------------
+%---------- Coordinate Systems
+%----------------------------------------
+
+Create CoordinateSystem SunEcliptic;
+GMAT SunEcliptic.Origin = Sun;
+GMAT SunEcliptic.Axes = MJ2000Ec;
+
+Create CoordinateSystem MarsInertial;
+GMAT MarsInertial.Origin = Mars;
+GMAT MarsInertial.Axes = MJ2000Ec;
+
+%----------------------------------------
+%---------- Solvers
+%----------------------------------------
+
+Create DifferentialCorrector DC1;
+GMAT DC1.ShowProgress = true;
+GMAT DC1.ReportStyle = Normal;
+GMAT DC1.ReportFile = 'DifferentialCorrectorDC1.data';
+GMAT DC1.MaximumIterations = 100;
+GMAT DC1.DerivativeMethod = ForwardDifference;
+GMAT DC1.Algorithm = NewtonRaphson;
+
+%----------------------------------------
+%---------- Subscribers
+%----------------------------------------
+
+Create OrbitView SunCenteredView;
+GMAT SunCenteredView.SolverIterations = Current;
+GMAT SunCenteredView.UpperLeft = [ 0.002352941176470588 0 ];
+GMAT SunCenteredView.Size = [ 0.7523529411764706 0.9476190476190476 ];
+GMAT SunCenteredView.RelativeZOrder = 1384;
+GMAT SunCenteredView.Maximized = false;
+GMAT SunCenteredView.Add = {MRO, Earth, Sun, Mars};
+GMAT SunCenteredView.CoordinateSystem = SunEcliptic;
+GMAT SunCenteredView.DrawObject = [ true true true true ];
+GMAT SunCenteredView.DataCollectFrequency = 1;
+GMAT SunCenteredView.UpdatePlotFrequency = 50;
+GMAT SunCenteredView.NumPointsToRedraw = 0;
+GMAT SunCenteredView.ShowPlot = true;
+GMAT SunCenteredView.ShowLabels = true;
+GMAT SunCenteredView.ViewPointReference = Sun;
+GMAT SunCenteredView.ViewPointVector = [ 0 0 500000000 ];
+GMAT SunCenteredView.ViewDirection = Sun;
+GMAT SunCenteredView.ViewScaleFactor = 1;
+GMAT SunCenteredView.ViewUpCoordinateSystem = SunEcliptic;
+GMAT SunCenteredView.ViewUpAxis = Z;
+GMAT SunCenteredView.EclipticPlane = Off;
+GMAT SunCenteredView.XYPlane = On;
+GMAT SunCenteredView.WireFrame = Off;
+GMAT SunCenteredView.Axes = On;
+GMAT SunCenteredView.Grid = Off;
+GMAT SunCenteredView.SunLine = Off;
+GMAT SunCenteredView.UseInitialView = On;
+GMAT SunCenteredView.StarCount = 7000;
+GMAT SunCenteredView.EnableStars = On;
+GMAT SunCenteredView.EnableConstellations = Off;
+
+Create GroundTrackPlot DefaultGroundTrackPlot;
+GMAT DefaultGroundTrackPlot.SolverIterations = Current;
+GMAT DefaultGroundTrackPlot.UpperLeft = [ 0.002352941176470588 0.4535714285714286 ];
+GMAT DefaultGroundTrackPlot.Size = [ 0.5 0.45 ];
+GMAT DefaultGroundTrackPlot.RelativeZOrder = 253;
+GMAT DefaultGroundTrackPlot.Maximized = false;
+GMAT DefaultGroundTrackPlot.Add = {MRO};
+GMAT DefaultGroundTrackPlot.DataCollectFrequency = 1;
+GMAT DefaultGroundTrackPlot.UpdatePlotFrequency = 50;
+GMAT DefaultGroundTrackPlot.NumPointsToRedraw = 0;
+GMAT DefaultGroundTrackPlot.ShowPlot = true;
+GMAT DefaultGroundTrackPlot.CentralBody = Earth;
+GMAT DefaultGroundTrackPlot.TextureMap = 'ModifiedBlueMarble.jpg';
+
+
+%----------------------------------------
+%---------- Mission Sequence
+%----------------------------------------
+
+BeginMissionSequence;
+Target DC1 {SolveMode = Solve, ExitMode = SaveAndContinue, ShowProgressWindow = true};
+   Propagate PropMRO(MRO) {MRO.ElapsedSecs = 1};
+   Vary 'VaryTCM.V' DC1(EarthDeparture.Element1 = 2.343239823117823, {Perturbation = 1e-12, Lower = -10e300, Upper = 10e300, MaxStep = 1e-1, AdditiveScaleFactor = 0.0, MultiplicativeScaleFactor = 1.0});
+   Vary 'VaryTCM.N' DC1(EarthDeparture.Element2 = 2.219951338974205, {Perturbation = 1e-12, Lower = -10e300, Upper = 10e300, MaxStep = 1e-1, AdditiveScaleFactor = 0.0, MultiplicativeScaleFactor = 1.0});
+   Vary 'VaryTCM.B' DC1(EarthDeparture.Element3 = 4.74546274619295, {Perturbation = 1e-12, Lower = -10e300, Upper = 10e300, MaxStep = 1e-1, AdditiveScaleFactor = 0.0, MultiplicativeScaleFactor = 1.0});
+   Maneuver 'ExecuteTCM' EarthDeparture(MRO);
+   Propagate 'PropToMars' PropMRO(MRO) {MRO.ElapsedDays = 250};
+   Achieve 'ArrivalMars' DC1(MRO.Mars.RMAG = 0, {Tolerance = 10000});
+EndTarget;  % For targeter DC1

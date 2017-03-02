@@ -1,17 +1,8 @@
 function f = dydt(t,y)
-%BEGINHEADER
-% SOURCE
-%   $.m
-% USAGE
-%   y = x(a,b)
-% DESCRIPTION
-%   
-% INPUTS
-%   y = initial state vector (12 elements, position and velocity of
-%   satellite followed by position and velocity of moon)
-% OUTPUTS
-%   y = output [unit]
-%ENDHEADER
+% Russell Bjella
+% ASEN 5050 Final Project
+% Three body integrator
+% ODE45 function
 
 % Constants
 M_m = 7.34767309e22;    % Mass of the moon [kg]
