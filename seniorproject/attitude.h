@@ -38,9 +38,15 @@ private:
 	const unsigned char bitsPerWord = 8;
 	const unsigned int speed = 1000000;
 
+	// Feedback resistances (ohms)
+	const double rf1=1000;
+	const double rf2=1000;
+	const double rf3=1000;
+	const double rf4=1000;
+
 	// Open and close functions
 	int spiOpen(); 	// returns spifd
-	int spiClose();
+	int spiClose(int spifd);
 
 
 }
